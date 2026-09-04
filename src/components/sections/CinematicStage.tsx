@@ -29,13 +29,16 @@ import HorizontalPortfolio from '@/components/sections/HorizontalPortfolio';
 export default function CinematicStage() {
   const { progress, containerRef } = useScrollProgress();
 
-  // Detect mobile synchronously so the camera reel never mounts (and never
-  // fires its frame-image requests) on mobile — avoids a flash + wasted loads.
-  const [isMobile, setIsMobile] = useState(
-    () => typeof window !== 'undefined' && window.innerWidth < 768
-  );
+  // Gate the camera reel behind a "mounted" flag so it never appears in the
+  // initial HTML (which would otherwise cause a hydration mismatch, since the
+  // reel is removed on mobile). After hydration we decide: desktop mounts the
+  // reel; mobile skips it entirely — no frames are ever requested on mobile.
+  const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    setMounted(true);
     const check = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
@@ -117,7 +120,7 @@ export default function CinematicStage() {
         </div>
 
         {/* ─── LAYER 2: Camera Assembly — enters from below (desktop only) ─── */}
-        {!isMobile && (
+        {mounted && !isMobile && (
         <div
           className="absolute inset-0 bg-[#FAF8F5]"
           style={{
