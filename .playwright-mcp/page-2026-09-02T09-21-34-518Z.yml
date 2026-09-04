@@ -1,0 +1,52 @@
+- generic:
+  - generic [active]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - navigation [ref=e6]:
+          - button [disabled] [ref=e7]:
+            - img "previous" [ref=e8]
+          - generic [ref=e10]:
+            - generic [ref=e11]: 1/
+            - generic [ref=e12]: "1"
+          - button [disabled] [ref=e13]:
+            - img "next" [ref=e14]
+        - generic [ref=e17]:
+          - generic "Latest available version is detected (16.3.4)." [ref=e20]: Next.js 16.3.4
+          - generic [ref=e21]: Turbopack
+      - dialog "Build Error" [ref=e23]:
+        - generic [ref=e26]:
+          - generic [ref=e28]:
+            - generic [ref=e29]:
+              - generic [ref=e30]: Build Error
+              - generic [ref=e32]:
+                - button "Copy Error Info" [ref=e33] [cursor=pointer]
+                - button "No related documentation found" [disabled] [ref=e36]
+                - button "Attach Node.js inspector" [ref=e39] [cursor=pointer]
+            - generic [ref=e48]: "Unexpected token. Did you mean `{'}'}` or `&rbrace;`?"
+          - generic [ref=e51]:
+            - generic [ref=e53]:
+              - generic [ref=e58]: ./src/components/sections/Portfolio.tsx (122:1)
+              - button "Open in editor" [ref=e59] [cursor=pointer]
+            - generic [ref=e64]:
+              - text: Error
+              - generic [ref=e65]: ": Unexpected token. Did you mean `"
+              - text: "{'}"
+              - generic [ref=e66]: "'}` or `&rbrace;`?"
+              - generic [ref=e67]: 120 |
+              - generic [ref=e68]: </section>
+              - generic [ref=e69]: 121 |
+              - generic [ref=e70]: );
+              - text: ">"
+              - generic [ref=e71]: 122 |
+              - generic [ref=e72]: "}"
+              - generic [ref=e73]: "|"
+              - text: ^
+              - generic [ref=e74]: "Parsing ecmascript source code failed Import traces: Client Component Browser: ./src/components/sections/Portfolio.tsx [Client Component Browser] ./src/app/page.tsx [Client Component Browser] ./src/app/page.tsx [Server Component] Client Component SSR: ./src/components/sections/Portfolio.tsx [Client Component SSR] ./src/app/page.tsx [Client Component SSR] ./src/app/page.tsx [Server Component]"
+    - generic [ref=e79] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e80]
+      - button "Open issues overlay" [ref=e85]:
+        - generic [ref=e86]:
+          - generic [aria-hidden] [ref=e87]: "0"
+          - generic [ref=e88]: "1"
+        - generic [ref=e89]: Issue
+  - alert [ref=e90]

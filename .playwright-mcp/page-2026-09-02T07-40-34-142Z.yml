@@ -1,0 +1,250 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - img "Precious One Photography" [ref=e5]
+      - paragraph [ref=e7]: Timeless Memories
+    - generic [ref=e9]:
+      - link "Precious One Photography Precious One" [ref=e10] [cursor=pointer]:
+        - /url: /
+        - img "Precious One Photography" [ref=e12]
+        - generic [ref=e13]: Precious One
+      - navigation [ref=e14]:
+        - link "Portfolio" [ref=e15] [cursor=pointer]:
+          - /url: "#portfolio"
+        - link "Services" [ref=e16] [cursor=pointer]:
+          - /url: "#services"
+        - link "About" [ref=e17] [cursor=pointer]:
+          - /url: "#about"
+        - link "Book a Session" [ref=e18] [cursor=pointer]:
+          - /url: "#contact"
+    - generic [ref=e20]:
+      - paragraph [ref=e25]: Loading...
+      - generic:
+        - generic:
+          - heading "Precious One" [level=1]
+          - paragraph: Photography
+        - generic: Scroll to explore
+        - generic:
+          - generic:
+            - generic: Dismantled
+            - generic: Assembly
+            - generic: Activate
+            - generic: Capture
+    - generic [ref=e27]:
+      - generic [ref=e28]:
+        - paragraph [ref=e29]: Our Work
+        - heading "Precious Moments" [level=2] [ref=e30]
+        - paragraph [ref=e31]: Every photograph tells a story of love, tenderness, and the fleeting beauty of life's most precious stages.
+      - generic [ref=e32]:
+        - button "All" [ref=e33]
+        - button "Newborn" [ref=e34]
+        - button "Baby" [ref=e35]
+        - button "Cake Smash" [ref=e36]
+        - button "Family" [ref=e37]
+        - button "Maternity" [ref=e38]
+      - generic [ref=e39]:
+        - generic [ref=e40]:
+          - img "Tiny Details" [ref=e41]
+          - generic [ref=e42]:
+            - generic [ref=e43]: newborn
+            - heading "Tiny Details" [level=3] [ref=e44]
+        - generic [ref=e45]:
+          - img "Peaceful Dreams" [ref=e46]
+          - generic [ref=e47]:
+            - generic [ref=e48]: newborn
+            - heading "Peaceful Dreams" [level=3] [ref=e49]
+        - generic [ref=e50]:
+          - img "Sweet Slumber" [ref=e51]
+          - generic [ref=e52]:
+            - generic [ref=e53]: newborn
+            - heading "Sweet Slumber" [level=3] [ref=e54]
+        - generic [ref=e55]:
+          - img "Little Explorer" [ref=e56]
+          - generic [ref=e57]:
+            - generic [ref=e58]: newborn
+            - heading "Little Explorer" [level=3] [ref=e59]
+        - generic [ref=e60]:
+          - img "Wrapped in Love" [ref=e61]
+          - generic [ref=e62]:
+            - generic [ref=e63]: newborn
+            - heading "Wrapped in Love" [level=3] [ref=e64]
+        - generic [ref=e65]:
+          - img "First Moments" [ref=e66]
+          - generic [ref=e67]:
+            - generic [ref=e68]: newborn
+            - heading "First Moments" [level=3] [ref=e69]
+        - generic [ref=e70]:
+          - img "Gentle Touch" [ref=e71]
+          - generic [ref=e72]:
+            - generic [ref=e73]: newborn
+            - heading "Gentle Touch" [level=3] [ref=e74]
+        - generic [ref=e75]:
+          - img "Angel Baby" [ref=e76]
+          - generic [ref=e77]:
+            - generic [ref=e78]: newborn
+            - heading "Angel Baby" [level=3] [ref=e79]
+        - generic [ref=e80]:
+          - img "Tiny Treasures" [ref=e81]
+          - generic [ref=e82]:
+            - generic [ref=e83]: newborn
+            - heading "Tiny Treasures" [level=3] [ref=e84]
+        - generic [ref=e85]:
+          - img "Pure Love" [ref=e86]
+          - generic [ref=e87]:
+            - generic [ref=e88]: newborn
+            - heading "Pure Love" [level=3] [ref=e89]
+        - generic [ref=e90]:
+          - img "Dreamy Eyes" [ref=e91]
+          - generic [ref=e92]:
+            - generic [ref=e93]: newborn
+            - heading "Dreamy Eyes" [level=3] [ref=e94]
+        - generic [ref=e95]:
+          - img "Soft Embrace" [ref=e96]
+          - generic [ref=e97]:
+            - generic [ref=e98]: newborn
+            - heading "Soft Embrace" [level=3] [ref=e99]
+        - generic [ref=e100]:
+          - img "Little Star" [ref=e101]
+          - generic [ref=e102]:
+            - generic [ref=e103]: newborn
+            - heading "Little Star" [level=3] [ref=e104]
+        - generic [ref=e105]:
+          - img "Precious Smile" [ref=e106]
+          - generic [ref=e107]:
+            - generic [ref=e108]: newborn
+            - heading "Precious Smile" [level=3] [ref=e109]
+        - generic [ref=e110]:
+          - img "Sweet Dreams" [ref=e111]
+          - generic [ref=e112]:
+            - generic [ref=e113]: newborn
+            - heading "Sweet Dreams" [level=3] [ref=e114]
+    - generic [ref=e116]:
+      - generic [ref=e117]:
+        - paragraph [ref=e118]: What We Offer
+        - heading "Our Services" [level=2] [ref=e119]
+        - paragraph [ref=e120]: Specialised photography services designed to capture every precious milestone of your family's journey.
+      - generic [ref=e121]:
+        - generic [ref=e122]:
+          - generic [ref=e123]: "01"
+          - heading "Newborn Photography" [level=3] [ref=e124]
+          - paragraph [ref=e125]: Capturing the delicate details and fleeting moments of your baby's first days with timeless artistry.
+        - generic [ref=e127]:
+          - generic [ref=e128]: "02"
+          - heading "Baby Milestone Photography" [level=3] [ref=e129]
+          - paragraph [ref=e130]: Celebrating every precious milestone from first smiles to first steps.
+        - generic [ref=e132]:
+          - generic [ref=e133]: "03"
+          - heading "Cake Smash Photography" [level=3] [ref=e134]
+          - paragraph [ref=e135]: Joyful and playful sessions celebrating your little one's first birthday.
+        - generic [ref=e137]:
+          - generic [ref=e138]: "04"
+          - heading "Pre-Birthday Photography" [level=3] [ref=e139]
+          - paragraph [ref=e140]: Anticipation and excitement captured before the big celebration.
+        - generic [ref=e142]:
+          - generic [ref=e143]: "05"
+          - heading "Family Sessions" [level=3] [ref=e144]
+          - paragraph [ref=e145]: Beautiful portraits that celebrate the love shared between family members.
+        - generic [ref=e147]:
+          - generic [ref=e148]: "06"
+          - heading "Maternity Photography" [level=3] [ref=e149]
+          - paragraph [ref=e150]: Elegantly documenting the beautiful journey of motherhood.
+    - generic [ref=e154]:
+      - img "Newborn photography" [ref=e156]
+      - generic [ref=e157]:
+        - paragraph [ref=e158]: Our Speciality
+        - heading "Newborn Photography" [level=2] [ref=e159]
+        - generic [ref=e160]:
+          - paragraph [ref=e161]: We have a special love for newborn photography. Those first few days are incredibly precious and pass by so quickly.
+          - paragraph [ref=e162]: We focus on capturing your baby's tiny details, beautiful expressions, and those once-in-a-lifetime moments in a timeless and artistic way.
+          - paragraph [ref=e163]: Every session is thoughtfully planned with care, patience, and attention to detail to ensure a comfortable experience for both baby and family.
+        - generic [ref=e164]: Tenderness • Patience • Artistry
+    - generic [ref=e168]:
+      - paragraph [ref=e172]: Your Comfort Matters
+      - heading "Privacy & Comfort" [level=2] [ref=e173]
+      - generic [ref=e174]:
+        - paragraph [ref=e175]: Your comfort, privacy, and security are extremely important to us.
+        - paragraph [ref=e176]: To provide a comfortable experience that respects local culture and family privacy, the entire process at Precious One Photography—including photography, editing, and printing—is handled exclusively by women.
+        - paragraph [ref=e177]: We are committed to creating a welcoming and private environment where families can feel completely comfortable throughout their photography experience.
+      - generic [ref=e178]:
+        - generic [ref=e179]: Women-Only Team
+        - generic [ref=e182]: Private Studio
+        - generic [ref=e185]: Cultural Respect
+        - generic [ref=e188]: Family Comfort
+    - generic [ref=e193]:
+      - generic [ref=e194]:
+        - paragraph [ref=e195]: About Us
+        - heading "Precious One Photography" [level=2] [ref=e196]
+        - paragraph [ref=e197]: “Timeless Memories of Your Most Precious Moments”
+        - generic [ref=e198]:
+          - paragraph [ref=e199]: Welcome to Precious One Photography, an Abu Dhabi-based photography studio specialising in baby and family photography.
+          - paragraph [ref=e200]: From the delicate details of a newborn to the joyful milestones of childhood and the love shared between family members, we believe every stage of life deserves to be beautifully preserved.
+        - link "Learn More" [ref=e201] [cursor=pointer]:
+          - /url: "#contact"
+      - generic [ref=e203]:
+        - heading "Studio Portrait" [level=3] [ref=e208]
+        - paragraph [ref=e209]: Photographer photo placeholder
+    - generic [ref=e211]:
+      - generic [ref=e212]:
+        - paragraph [ref=e213]: Follow Our Journey
+        - heading "Discover on Instagram" [level=2] [ref=e214]
+        - paragraph [ref=e215]: Explore some of our latest work, photography sessions, and beautiful family moments.
+      - generic [ref=e216]:
+        - link [ref=e217] [cursor=pointer]:
+          - /url: https://www.instagram.com/preciousonephotography
+          - img "Tiny Details" [ref=e218]
+        - link [ref=e222] [cursor=pointer]:
+          - /url: https://www.instagram.com/preciousonephotography
+          - img "Peaceful Dreams" [ref=e223]
+        - link [ref=e227] [cursor=pointer]:
+          - /url: https://www.instagram.com/preciousonephotography
+          - img "Sweet Slumber" [ref=e228]
+        - link [ref=e232] [cursor=pointer]:
+          - /url: https://www.instagram.com/preciousonephotography
+          - img "Little Explorer" [ref=e233]
+        - link [ref=e237] [cursor=pointer]:
+          - /url: https://www.instagram.com/preciousonephotography
+          - img "Wrapped in Love" [ref=e238]
+        - link [ref=e242] [cursor=pointer]:
+          - /url: https://www.instagram.com/preciousonephotography
+          - img "First Moments" [ref=e243]
+      - link "Follow @preciousonephotography" [ref=e248] [cursor=pointer]:
+        - /url: https://www.instagram.com/preciousonephotography
+    - generic [ref=e253]:
+      - generic [ref=e254]:
+        - paragraph [ref=e255]: Preserve Your Precious Moments
+        - heading "Book a Session" [level=2] [ref=e256]
+        - paragraph [ref=e257]: Every precious moment deserves to be beautifully preserved. Let us capture your family's most treasured memories.
+        - generic [ref=e258]:
+          - link "Book via WhatsApp" [ref=e259] [cursor=pointer]:
+            - /url: https://wa.me/971501234567
+          - link "Send Email" [ref=e262] [cursor=pointer]:
+            - /url: mailto:hello@preciousonephotography.com
+      - generic [ref=e265]:
+        - generic [ref=e270]:
+          - heading "Phone" [level=4] [ref=e271]
+          - paragraph [ref=e272]: +971 50 123 4567
+        - generic [ref=e278]:
+          - heading "Studio" [level=4] [ref=e279]
+          - paragraph [ref=e280]: Abu Dhabi, United Arab Emirates
+        - generic [ref=e285]:
+          - heading "Hours" [level=4] [ref=e286]
+          - paragraph [ref=e287]: "Sunday - Saturday: 9:00 AM - 6:00 PM"
+        - generic [ref=e292]:
+          - heading "Email" [level=4] [ref=e293]
+          - paragraph [ref=e294]: hello@preciousonephotography.com
+    - generic [ref=e296]:
+      - generic [ref=e297]:
+        - generic [ref=e298]:
+          - heading "Precious One Photography" [level=3] [ref=e299]
+          - paragraph [ref=e300]: Timeless Memories of Your Most Precious Moments
+        - navigation [ref=e301]:
+          - link "Portfolio" [ref=e302] [cursor=pointer]:
+            - /url: "#portfolio"
+          - link "Services" [ref=e303] [cursor=pointer]:
+            - /url: "#services"
+          - link "About" [ref=e304] [cursor=pointer]:
+            - /url: "#about"
+          - link "Contact" [ref=e305] [cursor=pointer]:
+            - /url: "#contact"
+      - paragraph [ref=e307]: © 2026 Precious One Photography. All rights reserved.
+  - button "Open Next.js Dev Tools" [ref=e313] [cursor=pointer]
