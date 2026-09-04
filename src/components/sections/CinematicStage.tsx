@@ -1,27 +1,29 @@
 'use client';
 
-import { useMemo, useEffect, useRef, useState } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import CinematicHero from '@/components/sections/CinematicHero';
 import FrameSequence from '@/components/ui/FrameSequence';
-import HorizontalPortfolio from '@/components/sections/HorizontalPortfolio';
+import PortfolioShowcase from '@/components/sections/PortfolioShowcase';
 
 /**
  * CinematicStage
  *
  * A single pinned viewport that orchestrates the cinematic transition:
- *   Hero → Camera Assembly → Portfolio Reveal
+ *   Hero → Camera Assembly → Portfolio Items (scroll-driven) → Next Section
  *
  * The outer section has enough scroll height to provide scroll progress.
  * The inner viewport is position:sticky so all content remains visually
  * anchored while scrolling only drives the timeline.
  *
  * Timeline (master progress p, 0–1):
- *  0.00–0.20  Hero translates upward (content scrolls above viewport)
+ *  0.00–0.15  Hero translates upward (content scrolls above viewport)
  *  0.00–0.20  Camera enters from below, in continuous conveyor motion
- *  0.20–0.62  Camera holds and frames assemble
- *  0.60–0.76  Camera fades out
- *  0.62–1.00  Real portfolio reveals, then scrolls horizontally
+ *  0.20–0.35  Camera holds and frames assemble
+ *  0.35–0.45  Camera fades out
+ *  0.45–0.55  Portfolio intro text appears
+ *  0.55–0.92  Portfolio items scroll through (scroll-driven index)
+ *  0.90–1.00  Portfolio fades out, next section begins
  *
  * After the stage completes, the site continues normally into Services /
  * About / Contact.
@@ -45,12 +47,17 @@ export default function CinematicStage() {
   }, []);
 
   // ── Timeline bounds (mobile skips the camera reel entirely) ──
-  // Desktop: hero exit 0–0.20 → camera reel 0.20–0.62 → portfolio 0.62–1.0
-  // Mobile:  hero exit 0–0.30 → portfolio reveal 0.20–0.45 → scroll 0.30–1.0
-  const heroExitEnd = isMobile ? 0.30 : 0.20;
-  const portfolioRevealStart = isMobile ? 0.20 : 0.62;
-  const portfolioRevealEnd = isMobile ? 0.45 : 0.76;
-  const portfolioScrollStart = isMobile ? 0.30 : 0.62;
+  // Desktop: hero exit 0–0.15 → camera 0.15–0.45 → portfolio 0.45–1.0
+  // Mobile:  hero exit 0–0.30 → portfolio 0.20–1.0
+  const heroExitEnd = isMobile ? 0.30 : 0.15;
+  const cameraStart = heroExitEnd;
+  const cameraHoldEnd = isMobile ? 0.30 : 0.40;
+  const cameraFadeEnd = isMobile ? 0.35 : 0.50;
+  const portfolioIntroStart = isMobile ? 0.25 : 0.45;
+  const portfolioIntroEnd = isMobile ? 0.45 : 0.55;
+  const portfolioItemsStart = isMobile ? 0.35 : 0.55;
+  const portfolioItemsEnd = isMobile ? 0.90 : 0.92;
+  const portfolioExitStart = isMobile ? 0.88 : 0.90;
 
   // ── Hero translates upward (no fade) ──
   // Hero moves 0 → -100vh as the user scrolls (content goes above).
@@ -72,37 +79,43 @@ export default function CinematicStage() {
   // Invisible on mobile (the reel is not rendered there).
   const cameraOpacity = useMemo(() => {
     if (isMobile) return 0;
-    if (progress <= 0.60) return 1;
-    if (progress >= 0.76) return 0;
-    return 1 - (progress - 0.60) / 0.16;
-  }, [progress, isMobile]);
+    if (progress <= cameraFadeEnd - 0.10) return 1;
+    if (progress >= cameraFadeEnd) return 0;
+    return 1 - (progress - (cameraFadeEnd - 0.10)) / 0.10;
+  }, [progress, isMobile, cameraFadeEnd]);
 
   // ── Camera frame sub-progress (maps assembly range to 0–1) ──
   const cameraFrameProgress = useMemo(() => {
-    if (progress <= heroExitEnd) return 0;
-    if (progress >= 0.62) return 1;
-    return (progress - heroExitEnd) / (0.62 - heroExitEnd);
-  }, [progress, heroExitEnd]);
+    if (progress <= cameraStart) return 0;
+    if (progress >= cameraHoldEnd) return 1;
+    return (progress - cameraStart) / (cameraHoldEnd - cameraStart);
+  }, [progress, cameraStart, cameraHoldEnd]);
 
-  // ── Portfolio sub-progress (maps portfolio portion of timeline to 0–1) ──
-  const portfolioProgress = useMemo(() => {
-    if (progress <= portfolioScrollStart) return 0;
-    if (progress >= 1) return 1;
-    return (progress - portfolioScrollStart) / (1 - portfolioScrollStart);
-  }, [progress, portfolioScrollStart]);
+  // ── Portfolio layer opacity: intro fades in, items scroll, then exit ──
+  const portfolioLayerOpacity = useMemo(() => {
+    if (progress <= portfolioIntroStart) return 0;
+    if (progress <= portfolioIntroEnd) {
+      // Fade in during intro
+      return (progress - portfolioIntroStart) / (portfolioIntroEnd - portfolioIntroStart);
+    }
+    if (progress <= portfolioExitStart) return 1;
+    // Fade out at exit
+    return 1 - (progress - portfolioExitStart) / (1 - portfolioExitStart);
+  }, [progress, portfolioIntroStart, portfolioIntroEnd, portfolioExitStart]);
 
-  // ── Portfolio layer reveal (0 → 1) as the camera dissolves ──
-  const portfolioRevealOpacity = useMemo(() => {
-    if (progress <= portfolioRevealStart) return 0;
-    if (progress >= portfolioRevealEnd) return 1;
-    return (progress - portfolioRevealStart) / (portfolioRevealEnd - portfolioRevealStart);
-  }, [progress, portfolioRevealStart, portfolioRevealEnd]);
+  // ── Portfolio item scroll index (maps scroll range → 0–14 fractional) ──
+  const portfolioIndex = useMemo(() => {
+    if (progress <= portfolioItemsStart) return 0;
+    if (progress >= portfolioItemsEnd) return 14;
+    const t = (progress - portfolioItemsStart) / (portfolioItemsEnd - portfolioItemsStart);
+    return t * 14; // 15 items (0–14)
+  }, [progress, portfolioItemsStart, portfolioItemsEnd]);
 
   return (
     <section
       ref={containerRef}
       className="relative bg-[#FAF8F5]"
-      style={{ height: '850vh' }}
+      style={{ height: '1400vh' }}
     >
       {/* Sticky viewport — stays pinned while user scrolls */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#FAF8F5]">
@@ -153,12 +166,15 @@ export default function CinematicStage() {
         <div
           className="absolute inset-0 bg-[#FAF8F5]"
           style={{
-            opacity: portfolioRevealOpacity,
+            opacity: portfolioLayerOpacity,
             willChange: 'opacity',
-            pointerEvents: portfolioRevealOpacity < 0.01 ? 'none' : 'auto',
+            pointerEvents: portfolioLayerOpacity < 0.01 ? 'none' : 'auto',
           }}
         >
-          <HorizontalPortfolio progress={portfolioProgress} />
+          <PortfolioShowcase
+            introProgress={portfolioLayerOpacity}
+            portfolioIndex={portfolioIndex}
+          />
         </div>
       </div>
     </section>
