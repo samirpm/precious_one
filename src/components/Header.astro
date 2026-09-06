@@ -87,6 +87,11 @@ const nav = [
     box-shadow: 0 1px 0 color-mix(in srgb, var(--color-ink) 8%, transparent);
   }
 
+  /* Tucks away while reading down the page, returns on the first scroll up. */
+  .site-header.is-hidden {
+    transform: translateY(-100%);
+  }
+
   @supports (backdrop-filter: blur(1px)) {
     .site-header.is-solid {
       background: color-mix(in srgb, var(--color-ivory) 86%, transparent);
@@ -334,6 +339,30 @@ const nav = [
       { rootMargin: '-80px 0px 0px 0px', threshold: 0 },
     );
     io.observe(hero);
+  }
+
+  // Hide on scroll down, show on scroll up (never while the menu is open).
+  if (header) {
+    let lastY = window.scrollY;
+    let ticking = false;
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const y = window.scrollY;
+          const delta = y - lastY;
+          if (!root.classList.contains('menu-open')) {
+            if (y > 320 && delta > 6) header.classList.add('is-hidden');
+            else if (delta < -6 || y < 320) header.classList.remove('is-hidden');
+          }
+          lastY = y;
+          ticking = false;
+        });
+      },
+      { passive: true },
+    );
   }
 
   let closeTimer = 0;

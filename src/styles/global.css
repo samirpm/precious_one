@@ -38,6 +38,19 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Soft cross-fade between pages, with no JavaScript, where supported. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.45s;
+    animation-timing-function: ease;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

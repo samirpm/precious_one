@@ -154,10 +154,20 @@ const featurePhoto = photoById(feature.photos[0]);
     }
   }
 
+  /* Editorial rhythm: three portrait cards, then two wide ones. */
   @media (min-width: 1024px) {
     .sessions-grid {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 2rem 1.5rem;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 2.5rem 1.5rem;
+    }
+    .sessions-grid li:nth-child(-n + 3) {
+      grid-column: span 2;
+    }
+    .sessions-grid li:nth-child(n + 4) {
+      grid-column: span 3;
+    }
+    .sessions-grid li:nth-child(n + 4) .card-frame {
+      aspect-ratio: 16 / 10;
     }
   }
 

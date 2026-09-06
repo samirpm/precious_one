@@ -201,6 +201,8 @@ const strip = stripPhotoIds.map(photoById);
       .work-track {
         overflow: visible;
         scroll-snap-type: none;
+        align-items: center;
+        height: 86vh;
         gap: 2.5vw;
         padding: 0 8vw 0 2vw;
         animation: work-slide linear both;
@@ -214,10 +216,26 @@ const strip = stripPhotoIds.map(photoById);
         max-width: none;
       }
 
+      /* Film-strip rhythm: alternate heights and a vertical offset. */
       .work-item .frame {
         height: 64vh;
         width: calc(64vh * 1.5);
         aspect-ratio: auto;
+      }
+
+      .work-item:nth-child(even) .frame {
+        height: 50vh;
+        width: calc(50vh * 1.5);
+      }
+
+      .work-item:nth-child(even) {
+        align-self: flex-start;
+        margin-top: 4vh;
+      }
+
+      .work-item:nth-child(4n + 3) {
+        align-self: flex-end;
+        margin-bottom: 4vh;
       }
 
       .work-end {
