@@ -18,28 +18,18 @@ export interface CoverflowSlide {
 
 export interface CoverflowCarouselProps {
   slides: CoverflowSlide[];
-  /** Degrees the first neighbour tilts. */
   rotate?: number;
-  /** How far the first neighbour recedes, as a fraction of card width. */
   depth?: number;
-  /** Viewer distance as a multiple of card width — smaller is a wider lens. */
   perspective?: number;
-  /** Exponent on distance. Below 1 the rake eases off as cards travel out. */
   falloff?: number;
-  /** Opacity lost per step from the centre. */
   fade?: number;
-  /** Any CSS length. Everything else is derived from it, so the rake scales. */
   cardWidth?: string;
-  /** Space between cards, as a fraction of card width. */
   gap?: number;
   loop?: boolean;
   showCaption?: boolean;
   showPagination?: boolean;
   showNavigation?: boolean;
-  /** External fractional slide index (0 to slides.length-1). When provided, the
-   *  carousel animates to this position instead of accepting user input. */
   slideIndex?: number;
-  /** Names the carousel for assistive tech. */
   label?: string;
   className?: string;
   cardClassName?: string;
@@ -67,10 +57,7 @@ export function CoverflowCarousel({
 
   const frameRef = React.useRef<HTMLDivElement>(null);
   const cardRefs = React.useRef<(HTMLDivElement | null)[]>([]);
-  /** Fractional card index at the centre. The single source of truth. */
   const posRef = React.useRef(0);
-  /** Where the current settle is headed. Stepping off `pos` instead would
-      swallow a keypress that lands mid-flight, before the round-off moves. */
   const targetRef = React.useRef(0);
   const widthRef = React.useRef(0);
   const rafRef = React.useRef<number | null>(null);
@@ -84,14 +71,11 @@ export function CoverflowCarousel({
 
   const [selected, setSelected] = React.useState(0);
 
-  /** Nearest whole card, folded back into 0..count-1. */
   const indexAt = React.useCallback(
     (pos: number) => ((Math.round(pos) % count) + count) % count,
     [count],
   );
 
-  // Paint straight to the DOM. Sixty state updates a second would re-render
-  // every card for numbers React never needs to see.
   const paint = React.useCallback(() => {
     const width = widthRef.current;
     if (!width) return;
@@ -101,8 +85,6 @@ export function CoverflowCarousel({
     cardRefs.current.forEach((card, index) => {
       if (!card) return;
 
-      // Fold the distance into the shorter way round the ring. This is the
-      // whole looping mechanism — no cloned nodes, no shuffling the DOM.
       let offset = index - pos;
       if (loop) {
         offset = ((offset % count) + count) % count;
@@ -161,7 +143,6 @@ export function CoverflowCarousel({
     [clamp, count, loop, settle],
   );
 
-  /** Drive carousel from an external fractional index (scroll-driven). */
   React.useEffect(() => {
     if (slideIndex === undefined) return;
     goTo(slideIndex);
@@ -265,7 +246,7 @@ export function CoverflowCarousel({
               nudge(1);
             }
           }}
-          className="cursor-grab overflow-hidden py-10 outline-none ring-[#C5A572] focus-visible:ring-2 active:cursor-grabbing"
+          className="cursor-grab overflow-hidden py-10 outline-none ring-champagne focus-visible:ring-2 active:cursor-grabbing"
           style={{
             perspective: `calc(var(--cf-card) * ${perspective})`,
             touchAction: "pan-y",
@@ -288,7 +269,7 @@ export function CoverflowCarousel({
                 aria-roledescription="slide"
                 aria-label={`${index + 1} of ${count}`}
                 className={cn(
-                  "absolute left-1/2 top-0 aspect-[3/4] overflow-hidden rounded-[6px] bg-[#F0E4D8] shadow-lg will-change-transform",
+                  "absolute left-1/2 top-0 aspect-[3/4] overflow-hidden rounded-[6px] bg-blush-light shadow-lg will-change-transform",
                   cardClassName,
                 )}
                 style={{ width: "var(--cf-card)" }}
@@ -310,7 +291,7 @@ export function CoverflowCarousel({
               type="button"
               aria-label="Previous slide"
               onClick={() => nudge(-1)}
-              className="absolute left-3 top-1/2 z-[200] -translate-y-1/2 rounded-full bg-[#FAF8F5]/70 p-2 text-[#2D2926] backdrop-blur transition hover:bg-[#FAF8F5]"
+              className="absolute left-3 top-1/2 z-[200] -translate-y-1/2 rounded-full bg-ivory/70 p-2 text-charcoal backdrop-blur transition hover:bg-ivory"
             >
               <ChevronLeft className="size-5" />
             </button>
@@ -318,7 +299,7 @@ export function CoverflowCarousel({
               type="button"
               aria-label="Next slide"
               onClick={() => nudge(1)}
-              className="absolute right-3 top-1/2 z-[200] -translate-y-1/2 rounded-full bg-[#FAF8F5]/70 p-2 text-[#2D2926] backdrop-blur transition hover:bg-[#FAF8F5]"
+              className="absolute right-3 top-1/2 z-[200] -translate-y-1/2 rounded-full bg-ivory/70 p-2 text-charcoal backdrop-blur transition hover:bg-ivory"
             >
               <ChevronRight className="size-5" />
             </button>
@@ -331,20 +312,20 @@ export function CoverflowCarousel({
           key={selected}
           className="mt-2 flex flex-col items-center px-6 duration-300 animate-in fade-in"
         >
-          <p className="text-[15px] font-semibold tracking-tight text-[#2D2926] font-serif">
+          <p className="text-[15px] font-semibold tracking-tight text-charcoal font-serif">
             {active.title}
           </p>
           {active.subtitle && (
-            <p className="mt-1 text-[13px] text-[#9C918A] font-sans">
+            <p className="mt-1 text-[13px] text-taupe font-sans">
               {active.subtitle}
             </p>
           )}
           {active.meta && active.meta.length > 0 && (
             <dl className="mt-10 w-full max-w-[230px] text-[12px]">
               {active.meta.map((row) => (
-                <div key={row.label} className="flex justify-between py-[5px] border-b border-[#C5A572]/20">
-                  <dt className="text-[#9C918A]">{row.label}</dt>
-                  <dd className="font-medium text-[#2D2926]">{row.value}</dd>
+                <div key={row.label} className="flex justify-between py-[5px] border-b border-champagne/20">
+                  <dt className="text-taupe">{row.label}</dt>
+                  <dd className="font-medium text-charcoal">{row.value}</dd>
                 </div>
               ))}
             </dl>
@@ -362,7 +343,7 @@ export function CoverflowCarousel({
               aria-current={index === selected}
               onClick={() => goTo(index)}
               className={cn(
-                "size-2 rounded-full bg-[#2D2926] transition-opacity",
+                "size-2 rounded-full bg-charcoal transition-opacity",
                 index === selected ? "opacity-100" : "opacity-30",
               )}
             />

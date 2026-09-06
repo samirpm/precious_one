@@ -16,11 +16,25 @@ export type PhotographyCategory =
   | 'family'
   | 'maternity';
 
+export interface ServicePackage {
+  name: string;
+  price: string;
+  priceNote?: string;
+  features: string[];
+  popular?: boolean;
+}
+
 export interface Service {
   id: string;
   title: string;
+  shortTitle: string;
   description: string;
   category: PhotographyCategory;
+  imageUrl: string;
+  gallery: string[];
+  longDescription: string;
+  idealFor: string;
+  packages: ServicePackage[];
 }
 
 export interface StudioInfo {

@@ -1,51 +1,44 @@
 'use client';
 
-import Image from 'next/image';
-import { useFadeOnScroll } from '@/hooks/useFadeOnScroll';
+import RevealImage from '@/components/ui/RevealImage';
+import SplitReveal from '@/components/ui/SplitReveal';
 
 export default function NewbornSpeciality() {
-  const { ref: sectionRef, style: sectionStyle } = useFadeOnScroll({ translate: 'up' });
-  const { ref: imageRef, style: imageStyle } = useFadeOnScroll({ translate: 'right', delay: 200 });
-  const { ref: textRef, style: textStyle } = useFadeOnScroll({ translate: 'left', delay: 300 });
-
   return (
     <section id="newborn" className="overflow-hidden">
-      <div
-        ref={sectionRef}
-        className="mx-auto max-w-[1440px] px-6 sm:px-8 md:px-10 lg:px-16 py-20 md:py-28 lg:py-36"
-        style={sectionStyle}
-      >
+      <div className="mx-auto max-w-[1440px] px-6 sm:px-8 md:px-10 lg:px-16 py-20 md:py-28 lg:py-36">
         <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
-          <div ref={imageRef} className="relative order-1" style={imageStyle}>
-            <div className="relative aspect-[4/5] overflow-hidden">
-              <Image
-                src="/images/portfolio/photo-3.jpeg"
-                alt="Newborn photography at Precious One Photography"
-                fill
-                className="object-cover transition-transform duration-1000 ease-out hover:scale-[1.03]"
-                sizes="(max-width: 1024px) 100vw, 55vw"
-              />
-            </div>
-            <div className="absolute -bottom-6 right-5 bg-[#FAF8F5] px-6 py-4 shadow-sm sm:right-10">
-              <p className="font-serif text-xl font-light text-[#2D2926]">
+          <div className="relative order-1">
+            <RevealImage
+              src="/images/portfolio/photo-3.jpeg"
+              alt="Newborn photography at Precious One Photography"
+              className="aspect-[4/5] relative"
+              parallax
+              direction="left"
+              sizes="(max-width: 1024px) 100vw, 55vw"
+            />
+            <div className="absolute -bottom-6 right-5 bg-ivory px-6 py-4 shadow-sm sm:right-10 z-10">
+              <p className="font-serif text-xl font-light text-charcoal">
                 The little details.
               </p>
             </div>
           </div>
 
-          <div ref={textRef} className="order-2 lg:pl-4" style={textStyle}>
+          <div className="order-2 lg:pl-4">
             <div className="mb-7 flex items-center gap-4">
-              <span className="h-px w-10 bg-[#B8956A]" />
-              <p className="font-sans text-[9px] font-medium uppercase tracking-[0.3em] text-[#9C7654]">
+              <span className="h-px w-10 bg-champagne-dark" />
+              <p className="font-sans text-[9px] font-medium uppercase tracking-[0.3em] text-champagne-dark">
                 Our Speciality
               </p>
             </div>
-            <h2 className="font-serif text-5xl font-light leading-[0.9] tracking-[-0.02em] text-[#2D2926] sm:text-6xl lg:text-7xl">
-              Those first
-              <br />
-              <em className="text-[#9C7654]">little days.</em>
-            </h2>
-            <div className="mt-10 max-w-xl space-y-6 font-sans text-[14px] font-light leading-7 text-[#4A4543]">
+            <SplitReveal
+              as="h2"
+              emClassName="text-champagne-dark"
+              className="font-serif text-5xl font-light leading-[0.9] tracking-[-0.02em] text-charcoal sm:text-6xl lg:text-7xl"
+            >
+              Those first <em>little days.</em>
+            </SplitReveal>
+            <div className="mt-10 max-w-xl space-y-6 font-sans text-[14px] font-light leading-7 text-charcoal-light">
               <p>
                 We have a special love for newborn photography. Those first few
                 days are incredibly precious and pass by so quickly.
@@ -62,15 +55,15 @@ export default function NewbornSpeciality() {
               </p>
             </div>
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <span className="font-serif text-lg italic text-[#9C7654]">
+              <span className="font-serif text-lg italic text-champagne-dark">
                 Tenderness
               </span>
-              <span className="hidden sm:block h-px w-6 bg-[#B8956A]" />
-              <span className="font-serif text-lg italic text-[#9C7654]">
+              <span className="hidden sm:block h-px w-6 bg-champagne-dark" />
+              <span className="font-serif text-lg italic text-champagne-dark">
                 Patience
               </span>
-              <span className="hidden sm:block h-px w-6 bg-[#B8956A]" />
-              <span className="font-serif text-lg italic text-[#9C7654]">
+              <span className="hidden sm:block h-px w-6 bg-champagne-dark" />
+              <span className="font-serif text-lg italic text-champagne-dark">
                 Artistry
               </span>
             </div>
