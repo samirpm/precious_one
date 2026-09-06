@@ -41,6 +41,9 @@ const items = await Promise.all(
   <script type="application/json" is:inline data-lb-data set:html={JSON.stringify(items)} />
 </dialog>
 
+<!-- A small "View" disc that follows the mouse over photographs. Mouse only. -->
+<div class="cursor" data-cursor aria-hidden="true"><span>View</span></div>
+
 <style>
   .lightbox {
     position: fixed;
@@ -174,6 +177,45 @@ const items = await Promise.all(
     right: 0.75rem;
   }
 
+  .cursor {
+    display: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :global(html.cursor-on) .cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      width: 4.75rem;
+      height: 4.75rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--color-ink) 84%, transparent);
+      color: var(--color-ivory);
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.1875rem;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.4);
+      transition:
+        opacity 0.25s ease,
+        transform 0.4s var(--ease-out-soft);
+      will-change: transform;
+    }
+
+    :global(html.cursor-on) .cursor.is-on {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    :global(html.cursor-on [data-lightbox]) {
+      cursor: none;
+    }
+  }
+
   @media (max-width: 767px) {
     .lb-nav {
       top: auto;
@@ -253,6 +295,44 @@ const items = await Promise.all(
       root.classList.remove('lightbox-open');
       lastTrigger?.focus();
     });
+
+    // "View" disc under the mouse while it is over a photograph. The move
+    // listener only exists while the pointer is over one.
+    const cursor = document.querySelector<HTMLElement>('[data-cursor]');
+    if (cursor && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      root.classList.add('cursor-on');
+      let active: Element | null = null;
+      let raf = 0;
+      let x = 0;
+      let y = 0;
+      const place = () => {
+        cursor.style.left = `${x}px`;
+        cursor.style.top = `${y}px`;
+        raf = 0;
+      };
+      const move = (e: PointerEvent) => {
+        x = e.clientX;
+        y = e.clientY;
+        if (!raf) raf = requestAnimationFrame(place);
+      };
+      const leave = () => {
+        active = null;
+        cursor.classList.remove('is-on');
+        document.removeEventListener('pointermove', move);
+      };
+      document.addEventListener('pointerover', (e) => {
+        const target = (e.target as Element).closest('[data-lightbox]');
+        if (target === active) return;
+        if (!target) return leave();
+        active = target;
+        move(e);
+        place();
+        cursor.classList.add('is-on');
+        document.addEventListener('pointermove', move, { passive: true });
+      });
+      document.documentElement.addEventListener('pointerleave', leave);
+      document.addEventListener('click', leave, true);
+    }
 
     document.addEventListener('click', (e) => {
       const trigger = (e.target as HTMLElement).closest<HTMLElement>('[data-lightbox]');

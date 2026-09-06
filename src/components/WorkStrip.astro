@@ -31,6 +31,7 @@ const strip = stripPhotoIds.map(photoById);
           <span class="hint-scroll">Keep scrolling</span>
           <span class="hint-swipe">Swipe</span>
         </p>
+        <div class="work-progress" aria-hidden="true"><span></span></div>
       </div>
 
       <div class="work-viewport">
@@ -100,6 +101,11 @@ const strip = stripPhotoIds.map(photoById);
   }
 
   .hint-scroll {
+    display: none;
+  }
+
+  /* A sand line that fills as the strip slides. Pinned version only. */
+  .work-progress {
     display: none;
   }
 
@@ -188,6 +194,31 @@ const strip = stripPhotoIds.map(photoById);
 
       .hint-swipe {
         display: none;
+      }
+
+      .work-progress {
+        display: block;
+        margin-top: 1rem;
+        width: min(100%, 14rem);
+        height: 1px;
+        background: color-mix(in srgb, var(--color-ivory) 20%, transparent);
+      }
+
+      .work-progress span {
+        display: block;
+        height: 100%;
+        background: var(--color-sand);
+        transform: scaleX(0);
+        transform-origin: left;
+        animation: work-progress linear both;
+        animation-timeline: --work;
+        animation-range: contain 0% contain 100%;
+      }
+
+      @keyframes work-progress {
+        to {
+          transform: scaleX(1);
+        }
       }
 
       .work-viewport {

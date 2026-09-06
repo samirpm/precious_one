@@ -329,17 +329,20 @@ export const testimonials = [
       'They captured our baby’s very first days with such patience and tenderness. Every frame feels like a piece of art we will treasure forever.',
     name: 'Aisha M.',
     detail: 'Newborn session',
+    photo: 'pink-lace',
   },
   {
     quote: 'Warm, private, and completely stress-free. Our family photograph brought my parents to tears.',
     name: 'The Khan family',
     detail: 'Family session',
+    photo: 'parents',
   },
   {
     quote:
       'From the booking to the final prints, everything felt personal. We booked again for the cake smash before we even left.',
     name: 'Layla and Omar',
     detail: 'Newborn and cake smash sessions',
+    photo: 'swing',
   },
 ];
 

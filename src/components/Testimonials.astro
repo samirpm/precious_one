@@ -1,14 +1,30 @@
 ---
+import { Picture } from 'astro:assets';
+import { photoById } from '../data/photos';
 import { testimonials } from '../data/studio';
+
+const quotes = testimonials.map((t) => ({ ...t, photo: photoById(t.photo) }));
 ---
 
+<!-- Each family's words sit under a photograph from their own session. -->
 <section class="section kind" aria-labelledby="kind-title">
   <div class="wrap">
     <h2 id="kind-title" class="display title-lg reveal">Kind words from families</h2>
     <ul class="quotes no-scrollbar">
-      {testimonials.map((t, i) => (
-        <li class="quote reveal" style={`--d: ${0.1 + i * 0.1}s`}>
-          <blockquote>
+      {quotes.map((t, i) => (
+        <li class="quote">
+          <div class="frame quote-frame reveal-clip" style={`--d: ${i * 0.12}s`}>
+            <Picture
+              src={t.photo.src}
+              alt={t.photo.alt}
+              widths={[400, 640, 900]}
+              sizes="(min-width: 768px) 30vw, 84vw"
+              formats={['avif', 'webp']}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <blockquote class="reveal" style={`--d: ${0.15 + i * 0.12}s`}>
             <p class="quote-text">“{t.quote}”</p>
             <footer>
               <cite class="quote-name">{t.name}</cite>
@@ -24,6 +40,7 @@ import { testimonials } from '../data/studio';
 <style>
   .kind {
     background: var(--color-blush);
+    --cover: var(--color-blush);
   }
 
   .kind h2 {
@@ -50,6 +67,11 @@ import { testimonials } from '../data/studio';
     scroll-snap-align: start;
   }
 
+  .quote-frame {
+    aspect-ratio: 5 / 4;
+    margin-bottom: 1.25rem;
+  }
+
   @media (min-width: 768px) {
     .quotes {
       display: grid;
@@ -58,9 +80,14 @@ import { testimonials } from '../data/studio';
       overflow: visible;
       margin-inline: 0;
       padding-inline: 0;
+      align-items: start;
     }
     .quote {
       max-width: none;
+    }
+    /* The middle column sits lower, like prints laid out on a table. */
+    .quote:nth-child(2) {
+      margin-top: 3.5rem;
     }
   }
 
@@ -68,9 +95,6 @@ import { testimonials } from '../data/studio';
     margin: 0;
     display: grid;
     gap: 1.25rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
-    height: 100%;
     align-content: start;
   }
 

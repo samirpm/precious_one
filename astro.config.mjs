@@ -12,7 +12,13 @@ export default defineConfig({
   integrations: [sitemap()],
   prefetch: { prefetchAll: true, defaultStrategy: 'viewport' },
   build: { inlineStylesheets: 'auto' },
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    plugins: [tailwindcss()],
+    // Lightning CSS folds `animation-timeline` into the `animation` shorthand,
+    // which browsers reject, silently killing every scroll-driven animation.
+    // esbuild leaves the longhands alone.
+    build: { cssMinify: 'esbuild' },
+  },
 
   // Self-hosted fonts (SIL Open Font License, see src/assets/fonts). Astro
   // generates metric-matched fallback faces so text does not jump when the
