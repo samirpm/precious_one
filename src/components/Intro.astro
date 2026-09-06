@@ -1,0 +1,70 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import { studio } from '../data/studio';
+---
+
+<!-- A short, once-per-visit welcome. Hidden entirely when the visitor
+     has already seen it or prefers reduced motion. -->
+<div class="intro" aria-hidden="true">
+  <Image src={logo} alt="" width={220} densities={[1, 2]} loading="eager" class="intro-logo" />
+  <p class="intro-text">{studio.city}</p>
+</div>
+
+<style>
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 1.25rem;
+    background: var(--color-ivory);
+    animation: intro-out 0.7s var(--ease-in-out-soft) 1.35s both;
+    pointer-events: none;
+  }
+
+  .intro-logo {
+    width: clamp(120px, 26vw, 200px);
+    height: auto;
+    animation: intro-logo 1.1s var(--ease-out-soft) both;
+  }
+
+  .intro-text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.125rem;
+    color: var(--color-cocoa);
+    animation: intro-logo 1s var(--ease-out-soft) 0.35s both;
+  }
+
+  @keyframes intro-logo {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes intro-out {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  :global(html.intro-seen) .intro,
+  :global(html.no-js) .intro {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .intro {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,267 @@
+---
+import { getImage } from 'astro:assets';
+import { photos } from '../data/photos';
+
+// One reasonably large WebP per photograph. The originals are around
+// 1100px wide, so there is nothing to gain from asking for more.
+const items = await Promise.all(
+  photos.map(async (p) => {
+    const img = await getImage({ src: p.src, width: Math.min(p.src.width, 1400), format: 'webp', quality: 84 });
+    return { id: p.id, src: img.src, alt: p.alt, caption: p.caption, w: img.attributes.width, h: img.attributes.height };
+  }),
+);
+---
+
+<dialog class="lightbox" data-lightbox-dialog aria-label="Photograph viewer">
+  <button type="button" class="lb-close" data-lb-close aria-label="Close">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  </button>
+
+  <figure class="lb-figure">
+    <img data-lb-img alt="" />
+    <figcaption class="lb-caption">
+      <span data-lb-caption></span>
+      <span class="meta" data-lb-count></span>
+    </figcaption>
+  </figure>
+
+  <button type="button" class="lb-nav lb-prev" data-lb-prev aria-label="Previous photograph">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M15 5l-7 7 7 7" />
+    </svg>
+  </button>
+  <button type="button" class="lb-nav lb-next" data-lb-next aria-label="Next photograph">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+
+  <script type="application/json" is:inline data-lb-data set:html={JSON.stringify(items)} />
+</dialog>
+
+<style>
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-ivory);
+    display: none;
+  }
+
+  .lightbox[open] {
+    display: grid;
+    place-items: center;
+  }
+
+  .lightbox::backdrop {
+    background: rgba(24, 20, 17, 0.96);
+  }
+
+  .lb-figure {
+    margin: 0;
+    display: grid;
+    justify-items: center;
+    gap: 0.9rem;
+    padding: 4rem 1rem 1rem;
+    max-width: 100vw;
+    touch-action: pan-y;
+  }
+
+  .lb-figure img {
+    max-width: min(94vw, 88rem);
+    max-height: calc(100dvh - 8.5rem);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    opacity: 1;
+    transition: opacity 0.35s ease;
+  }
+
+  .lb-figure img.is-swapping {
+    opacity: 0;
+  }
+
+  .lb-caption {
+    display: flex;
+    gap: 1.25rem;
+    align-items: baseline;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.125rem;
+    text-align: center;
+  }
+
+  .lb-caption .meta {
+    color: color-mix(in srgb, var(--color-ivory) 60%, transparent);
+    font-family: var(--font-body);
+    font-style: normal;
+  }
+
+  .lb-close,
+  .lb-nav {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-ivory) 25%, transparent);
+    background: color-mix(in srgb, var(--color-ink) 60%, transparent);
+    color: var(--color-ivory);
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .lb-close:hover,
+  .lb-nav:hover {
+    border-color: var(--color-ivory);
+  }
+
+  .lb-close svg,
+  .lb-nav svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .lb-close {
+    top: max(1rem, env(safe-area-inset-top));
+    right: 1rem;
+  }
+
+  .lb-nav {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .lb-prev {
+    left: 0.75rem;
+  }
+
+  .lb-next {
+    right: 0.75rem;
+  }
+
+  @media (max-width: 767px) {
+    .lb-nav {
+      top: auto;
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      transform: none;
+    }
+    .lb-prev {
+      left: 1rem;
+    }
+    .lb-next {
+      right: 1rem;
+    }
+    .lb-figure {
+      padding-bottom: 5rem;
+    }
+    .lb-figure img {
+      max-height: calc(100dvh - 12rem);
+    }
+  }
+</style>
+
+<script>
+  type Item = { id: string; src: string; alt: string; caption: string; w: number; h: number };
+
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
+  const dataEl = dialog?.querySelector<HTMLScriptElement>('[data-lb-data]');
+  if (dialog && dataEl && typeof dialog.showModal === 'function') {
+    const items: Item[] = JSON.parse(dataEl.textContent || '[]');
+    const img = dialog.querySelector<HTMLImageElement>('[data-lb-img]')!;
+    const cap = dialog.querySelector<HTMLElement>('[data-lb-caption]')!;
+    const count = dialog.querySelector<HTMLElement>('[data-lb-count]')!;
+    const root = document.documentElement;
+    let index = 0;
+    let swapTimer = 0;
+    let lastTrigger: HTMLElement | null = null;
+
+    const preload = (i: number) => {
+      const item = items[(i + items.length) % items.length];
+      if (item) new Image().src = item.src;
+    };
+
+    const render = (i: number, instant = false) => {
+      index = (i + items.length) % items.length;
+      const item = items[index];
+      const apply = () => {
+        img.src = item.src;
+        img.alt = item.alt;
+        img.width = item.w;
+        img.height = item.h;
+        cap.textContent = item.caption;
+        count.textContent = `${index + 1} of ${items.length}`;
+        img.classList.remove('is-swapping');
+      };
+      window.clearTimeout(swapTimer);
+      if (instant) apply();
+      else {
+        img.classList.add('is-swapping');
+        swapTimer = window.setTimeout(apply, 180);
+      }
+      preload(index + 1);
+      preload(index - 1);
+    };
+
+    const open = (id: string, trigger: HTMLElement) => {
+      const i = Math.max(0, items.findIndex((it) => it.id === id));
+      lastTrigger = trigger;
+      render(i, true);
+      dialog.showModal();
+      root.classList.add('lightbox-open');
+    };
+
+    const close = () => {
+      dialog.close();
+    };
+
+    dialog.addEventListener('close', () => {
+      root.classList.remove('lightbox-open');
+      lastTrigger?.focus();
+    });
+
+    document.addEventListener('click', (e) => {
+      const trigger = (e.target as HTMLElement).closest<HTMLElement>('[data-lightbox]');
+      if (trigger) open(trigger.dataset.lightbox || '', trigger);
+    });
+
+    dialog.querySelector('[data-lb-close]')?.addEventListener('click', close);
+    dialog.querySelector('[data-lb-prev]')?.addEventListener('click', () => render(index - 1));
+    dialog.querySelector('[data-lb-next]')?.addEventListener('click', () => render(index + 1));
+
+    // Click on the dark backdrop closes.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) close();
+    });
+
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') render(index + 1);
+      if (e.key === 'ArrowLeft') render(index - 1);
+    });
+
+    // Swipe left / right on touch screens.
+    let startX = 0;
+    let startY = 0;
+    dialog.addEventListener('pointerdown', (e) => {
+      startX = e.clientX;
+      startY = e.clientY;
+    });
+    dialog.addEventListener('pointerup', (e) => {
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) render(index + (dx < 0 ? 1 : -1));
+    });
+  }
+</script>

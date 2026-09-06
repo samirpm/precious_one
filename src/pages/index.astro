@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import WorkStrip from '../components/WorkStrip.astro';
+import Sessions from '../components/Sessions.astro';
+import Studio from '../components/Studio.astro';
+import Process from '../components/Process.astro';
+import Testimonials from '../components/Testimonials.astro';
+import Faq from '../components/Faq.astro';
+import Contact from '../components/Contact.astro';
+import { studio } from '../data/studio';
+---
+
+<Base
+  title={`${studio.name} | Newborn and family photography in Abu Dhabi`}
+  description={studio.description}
+  overlayHeader
+  intro
+>
+  <main>
+    <Hero />
+    <WorkStrip />
+    <Sessions />
+    <Studio />
+    <Process />
+    <Testimonials />
+    <Faq />
+    <Contact />
+  </main>
+</Base>

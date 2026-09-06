@@ -1,0 +1,145 @@
+---
+import { Picture } from 'astro:assets';
+import { photoById } from '../data/photos';
+import { promises } from '../data/studio';
+
+const photo = photoById('fingers');
+const second = photoById('toes');
+---
+
+<section id="studio" class="section studio" aria-labelledby="studio-title">
+  <div class="wrap studio-grid">
+    <div class="studio-media">
+      <div class="frame studio-frame reveal-clip">
+        <Picture
+          src={photo.src}
+          alt={photo.alt}
+          widths={[480, 768, 1024]}
+          sizes="(min-width: 1024px) 42vw, 100vw"
+          formats={['avif', 'webp']}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+      <div class="frame studio-frame-small reveal-clip" style="--d: 0.2s">
+        <Picture
+          src={second.src}
+          alt={second.alt}
+          widths={[320, 480, 640]}
+          sizes="(min-width: 1024px) 18vw, 40vw"
+          formats={['avif', 'webp']}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </div>
+
+    <div class="studio-text">
+      <h2 id="studio-title" class="display title-lg reveal">A studio built around your comfort</h2>
+      <p class="lede reveal" style="--d: 0.1s">
+        Beautiful photographs begin with a family that feels safe, respected and completely at ease. Everything about
+        the studio is arranged for that.
+      </p>
+      <dl class="promises">
+        {promises.map((p, i) => (
+          <div class="promise reveal" style={`--d: ${0.15 + i * 0.08}s`}>
+            <dt class="title-sm">{p.title}</dt>
+            <dd class="prose-soft">{p.body}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .studio {
+    background: var(--color-parchment);
+    --cover: var(--color-parchment);
+  }
+
+  .studio-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .studio-grid {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: clamp(3rem, 7vw, 7rem);
+      align-items: start;
+    }
+  }
+
+  .studio-media {
+    position: relative;
+  }
+
+  .studio-frame {
+    aspect-ratio: 4 / 5;
+  }
+
+  /* A second, smaller photograph tucked over the corner of the first.
+     Only on wide screens; one photograph is enough on a phone. */
+  .studio-frame-small {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .studio-media {
+      position: sticky;
+      top: 7rem;
+      margin-bottom: 3rem;
+    }
+    /* Extra specificity: the global .reveal-clip rule sets position: relative. */
+    .studio-media .studio-frame-small {
+      display: block;
+      position: absolute;
+      right: -3rem;
+      bottom: -3rem;
+      width: 46%;
+      aspect-ratio: 4 / 3;
+      box-shadow: 0 24px 50px -24px rgba(42, 36, 32, 0.45);
+    }
+  }
+
+  .studio-text {
+    display: grid;
+    gap: 1.25rem;
+    padding-top: 1.5rem;
+  }
+
+  .studio-text .lede {
+    max-width: 40ch;
+  }
+
+  .promises {
+    margin: 1.5rem 0 0;
+    display: grid;
+    gap: 0;
+  }
+
+  .promise {
+    display: grid;
+    gap: 0.4rem;
+    padding: 1.4rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+  }
+
+  .promise:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+  }
+
+  .promise dd {
+    margin: 0;
+    max-width: 52ch;
+  }
+
+  @media (min-width: 640px) {
+    .promise {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+  }
+</style>

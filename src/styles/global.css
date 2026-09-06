@@ -1,0 +1,444 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/*  Design tokens                                                      */
+/*  Warm ivory ground, the sand of the studio's logo as the only       */
+/*  accent, and a warm ink instead of pure black so the photographs    */
+/*  never sit against something colder than themselves.               */
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-*: initial;
+  --color-ivory: #f7f3ec;
+  --color-parchment: #eee7db;
+  --color-sand: #cdbb98;
+  --color-sand-deep: #b9a27a;
+  --color-clay: #a08461;
+  --color-cocoa: #6b5744;
+  --color-ink: #2a2420;
+  --color-ink-soft: #3d3530;
+  --color-blush: #ead7cd;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
+
+  /* Provided by Astro's font pipeline (see astro.config.mjs), with
+     metric-matched fallbacks included in each variable. */
+  --font-display: var(--font-cormorant);
+  --font-body: var(--font-dm);
+
+  --ease-out-soft: cubic-bezier(0.2, 0.65, 0.2, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.2, 1);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+html.menu-open,
+html.lightbox-open {
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--color-sand);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-clay);
+  outline-offset: 3px;
+}
+
+img,
+picture {
+  display: block;
+  max-width: 100%;
+}
+
+strong {
+  font-weight: 500;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Typography                                                         */
+/* ------------------------------------------------------------------ */
+.display {
+  font-family: var(--font-display);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.display em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+.title-xl {
+  font-size: clamp(2.75rem, 6.5vw, 6rem);
+}
+
+.title-lg {
+  font-size: clamp(2.25rem, 4.6vw, 4rem);
+}
+
+.title-md {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+.title-sm {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.375rem, 2vw, 1.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.lede {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+  line-height: 1.4;
+  color: var(--color-cocoa);
+  text-wrap: pretty;
+}
+
+.prose-soft {
+  color: var(--color-cocoa);
+  max-width: 60ch;
+  text-wrap: pretty;
+}
+
+.prose-soft p + p {
+  margin-top: 1.1em;
+}
+
+.small {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.meta {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--color-cocoa);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Layout                                                             */
+/* ------------------------------------------------------------------ */
+.wrap {
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 4.5rem);
+}
+
+.section {
+  padding-block: clamp(4.5rem, 9vw, 8.5rem);
+}
+
+.section-tight {
+  padding-block: clamp(3rem, 6vw, 5.5rem);
+}
+
+.rule {
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+}
+
+.dark {
+  background: var(--color-ink);
+  color: var(--color-ivory);
+}
+
+.dark .prose-soft,
+.dark .lede,
+.dark .meta {
+  color: color-mix(in srgb, var(--color-ivory) 72%, transparent);
+}
+
+.dark .rule {
+  border-top-color: color-mix(in srgb, var(--color-ivory) 14%, transparent);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Buttons and links                                                  */
+/* ------------------------------------------------------------------ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  line-height: 1;
+  letter-spacing: 0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s var(--ease-out-soft);
+  cursor: pointer;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex: none;
+}
+
+.btn-primary {
+  background: var(--color-sand);
+  color: var(--color-ink);
+  border-color: var(--color-sand);
+}
+
+.btn-primary:hover {
+  background: var(--color-sand-deep);
+  border-color: var(--color-sand-deep);
+}
+
+.btn-ink {
+  background: var(--color-ink);
+  color: var(--color-ivory);
+  border-color: var(--color-ink);
+}
+
+.btn-ink:hover {
+  background: var(--color-ink-soft);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-ink);
+  border-color: color-mix(in srgb, var(--color-ink) 30%, transparent);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-ink);
+}
+
+.btn-light {
+  background: transparent;
+  color: var(--color-white);
+  border-color: color-mix(in srgb, var(--color-white) 55%, transparent);
+}
+
+.btn-light:hover {
+  background: color-mix(in srgb, var(--color-white) 12%, transparent);
+  border-color: var(--color-white);
+}
+
+.link-line {
+  color: inherit;
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  padding-bottom: 0.1em;
+  transition: background-size 0.3s var(--ease-out-soft);
+}
+
+.link-line:hover {
+  background-size: 0% 1px;
+  background-position: 100% 100%;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Scroll reveals: a single IntersectionObserver adds .is-in.         */
+/*  Everything stays visible when motion is reduced, or before JS.     */
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .reveal {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition:
+      opacity 0.9s var(--ease-out-soft) var(--d, 0s),
+      transform 0.9s var(--ease-out-soft) var(--d, 0s);
+  }
+
+  html.js .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Photographs are uncovered by a panel that slides away (a transform, so
+     it runs on the compositor). A clip-path would be simpler, but Chromium's
+     IntersectionObserver treats a fully clipped element as never visible. */
+  html.js .reveal-clip {
+    position: relative;
+    overflow: hidden;
+  }
+
+  html.js .reveal-clip::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: 2;
+    background: var(--cover, var(--color-ivory));
+    transform-origin: top;
+    transition: transform 1.1s var(--ease-in-out-soft) var(--d, 0s);
+    pointer-events: none;
+  }
+
+  html.js .reveal-clip.is-in::after {
+    transform: scaleY(0);
+  }
+
+  html.js .reveal-clip img {
+    transform: scale(1.06);
+    transition: transform 1.4s var(--ease-out-soft) var(--d, 0s);
+  }
+
+  html.js .reveal-clip.is-in img {
+    transform: none;
+  }
+}
+
+.dark {
+  --cover: var(--color-ink);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Word-by-word rise for the hero headline (CSS only)                 */
+/* ------------------------------------------------------------------ */
+.words .w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.words .w > span {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js .words .w > span {
+    transform: translateY(110%);
+    animation: word-rise 1s var(--ease-out-soft) both;
+    animation-delay: calc(var(--start, 0.2s) + var(--i, 0) * 0.06s);
+  }
+}
+
+@keyframes word-rise {
+  to {
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Photo frames                                                       */
+/* ------------------------------------------------------------------ */
+.frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-parchment);
+}
+
+/* <Picture> wraps the img in an auto-height <picture>, so the img is
+   positioned against the frame itself to fill it. */
+.frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dark .frame {
+  background: var(--color-ink-soft);
+}
+
+/* Keyboard and hover affordance for clickable photos */
+.frame-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  text-align: left;
+}
+
+.frame-button img {
+  transition: transform 1.2s var(--ease-out-soft);
+}
+
+@media (hover: hover) {
+  .frame-button:hover img {
+    transform: scale(1.03);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Details / FAQ                                                      */
+/* ------------------------------------------------------------------ */
+details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Utilities                                                          */
+/* ------------------------------------------------------------------ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
