@@ -89,6 +89,10 @@ import { services } from '../data/studio';
     }
   }
 
+  :global(html.motion) .marquee-track {
+    animation: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .marquee {
       overflow-x: auto;

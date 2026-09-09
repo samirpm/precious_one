@@ -21,6 +21,7 @@ import Words from './Words.astro';
     </div>
 
     <ol class="steps">
+      <span class="steps-line" aria-hidden="true"></span>
       {steps.map((step, i) => (
         <li class="step reveal" style={`--d: ${0.1 + i * 0.12}s`}>
           <span class="step-number display" aria-hidden="true">{i + 1}</span>
@@ -47,12 +48,34 @@ import Words from './Words.astro';
   }
 
   .steps {
+    position: relative;
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
     gap: 2rem;
     counter-reset: step;
+  }
+
+  .steps-line {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--color-sand);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  @media (min-width: 768px) {
+    :global(html.motion) .steps-line {
+      display: block;
+    }
+    :global(html.motion) .step::before {
+      display: none;
+    }
   }
 
   @media (min-width: 768px) {

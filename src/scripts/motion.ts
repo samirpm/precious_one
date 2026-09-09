@@ -80,6 +80,94 @@ if (!reduced) {
   }
 
   /* ---------------------------------------------------------------- */
+  /*  Opening sequence, after the intro curtain (or straight away)       */
+  /* ---------------------------------------------------------------- */
+  if (hero) {
+    const start = root.classList.contains('has-intro') && !root.classList.contains('intro-seen') ? 2.35 : 0.25;
+    const media = q('.hero-media', hero);
+    const parallax = q('.hero-parallax', hero);
+    const open = gsap.timeline({ delay: start });
+    if (media) open.fromTo(media, { scale: 1.2 }, { scale: 1, duration: 2.8, ease: 'power3.out' }, 0);
+    open.from(qa('.thumb', hero), { y: 14, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.08, clearProps: 'transform,opacity' }, 1.0);
+    open.from(qa('.site-header .brand, .site-header .nav-desktop a, .site-header .phone, .site-header .btn-header, .site-header .menu-toggle'), {
+      y: -12,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      stagger: 0.06,
+      clearProps: 'transform,opacity',
+    }, 0.35);
+
+    // The photograph leans gently with the mouse.
+    if (fine && parallax) {
+      const mx = gsap.quickTo(parallax, 'x', { duration: 1.4, ease: 'power3' });
+      const my = gsap.quickTo(parallax, 'y', { duration: 1.4, ease: 'power3' });
+      hero.addEventListener('pointermove', (e) => {
+        mx((e.clientX / window.innerWidth - 0.5) * -34);
+        my((e.clientY / window.innerHeight - 0.5) * -22);
+      });
+      hero.addEventListener('pointerleave', () => {
+        mx(0);
+        my(0);
+      });
+    }
+  }
+
+  /* ---------------------------------------------------------------- */
+  /*  Marquee: runs on its own, hurries and reverses with the scroll     */
+  /* ---------------------------------------------------------------- */
+  const marquee = q('.marquee-track');
+  if (marquee) {
+    const loop = gsap.to(marquee, { xPercent: -50, ease: 'none', duration: 48, repeat: -1 });
+    let target = 1;
+    const settle = gsap.delayedCall(0.5, () => (target = target < 0 ? -1 : 1)).pause();
+    ScrollTrigger.create({
+      onUpdate: (self) => {
+        const v = self.getVelocity();
+        target = (v < 0 ? -1 : 1) * (1 + Math.min(4, Math.abs(v) / 600));
+        settle.restart(true);
+      },
+    });
+    gsap.ticker.add(() => {
+      loop.timeScale(gsap.utils.interpolate(loop.timeScale(), target, 0.06));
+    });
+  }
+
+  /* ---------------------------------------------------------------- */
+  /*  Session cards lay down into place, one after another              */
+  /* ---------------------------------------------------------------- */
+  const cards = qa('.sessions-grid > li, .more-grid > li');
+  if (cards.length) {
+    gsap.set(cards, { y: 70, rotateX: -14, opacity: 0, transformPerspective: 900, transformOrigin: '50% 100%' });
+    ScrollTrigger.batch(cards, {
+      start: 'top 90%',
+      once: true,
+      onEnter: (batch) => gsap.to(batch, { y: 0, rotateX: 0, opacity: 1, duration: 1.2, ease: 'power3.out', stagger: 0.12, clearProps: 'transform,opacity' }),
+    });
+  }
+
+  /* ---------------------------------------------------------------- */
+  /*  The line through the three steps draws itself                     */
+  /* ---------------------------------------------------------------- */
+  const stepsLine = q('.steps-line');
+  if (stepsLine) {
+    gsap.fromTo(stepsLine, { scaleX: 0 }, { scaleX: 1, ease: 'none', scrollTrigger: { trigger: '.steps', start: 'top 80%', end: 'bottom 45%', scrub: 0.6 } });
+  }
+
+  /* ---------------------------------------------------------------- */
+  /*  Questions slide in one by one                                     */
+  /* ---------------------------------------------------------------- */
+  const faqItems = qa('.faq-item');
+  if (faqItems.length) {
+    gsap.set(faqItems, { x: -28, opacity: 0 });
+    ScrollTrigger.batch(faqItems, {
+      start: 'top 92%',
+      once: true,
+      onEnter: (batch) => gsap.to(batch, { x: 0, opacity: 1, duration: 0.9, ease: 'power3.out', stagger: 0.09, clearProps: 'transform,opacity' }),
+    });
+  }
+
+  /* ---------------------------------------------------------------- */
   /*  Pinned horizontal gallery                                          */
   /* ---------------------------------------------------------------- */
   const work = q('#work');

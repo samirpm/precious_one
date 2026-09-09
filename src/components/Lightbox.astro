@@ -117,6 +117,27 @@ const items = await Promise.all(
     opacity: 0;
   }
 
+  @media (prefers-reduced-motion: no-preference) {
+    .lb-figure img.from-right {
+      animation: lb-from-right 0.55s var(--ease-out-soft);
+    }
+    .lb-figure img.from-left {
+      animation: lb-from-left 0.55s var(--ease-out-soft);
+    }
+  }
+
+  @keyframes lb-from-right {
+    from {
+      transform: translateX(3rem);
+    }
+  }
+
+  @keyframes lb-from-left {
+    from {
+      transform: translateX(-3rem);
+    }
+  }
+
   .lb-caption {
     display: flex;
     gap: 1.25rem;
@@ -274,9 +295,13 @@ const items = await Promise.all(
     };
 
     const render = (i: number, instant = false) => {
+      const dir = instant ? 0 : Math.sign(i - index);
       index = (i + items.length) % items.length;
       const item = items[index];
       const apply = () => {
+        img.classList.remove('from-left', 'from-right');
+        void img.offsetWidth;
+        if (dir) img.classList.add(dir > 0 ? 'from-right' : 'from-left');
         img.src = item.src;
         img.alt = item.alt;
         img.width = item.w;
