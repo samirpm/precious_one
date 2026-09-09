@@ -1,6 +1,7 @@
 ---
 import { Picture } from 'astro:assets';
 import { photoById } from '../data/photos';
+import Words from './Words.astro';
 
 // An editorial mosaic: mixed sizes, ragged edges, each photograph drifting at
 // its own pace as the page scrolls.
@@ -17,7 +18,7 @@ const tiles = [
 <section class="section details" aria-labelledby="details-title">
   <div class="wrap">
     <div class="details-head">
-      <h2 id="details-title" class="display title-lg reveal">The little details</h2>
+      <h2 id="details-title" class="display title-lg words words-reveal"><Words text="The little details" /></h2>
       <p class="lede reveal" style="--d: 0.1s">
         Fingers and toes, first sleepy smiles, a big sibling’s first kiss. The things you will want to remember exactly
         as they were.
@@ -28,7 +29,7 @@ const tiles = [
       {tiles.map((tile, i) => (
         <li class:list={['tile', `tile-${tile.span}`]} style={`--ratio: ${tile.ratio}; --d: ${(i % 3) * 0.1}s`}>
           <button type="button" class="frame-button" data-lightbox={tile.photo.id} aria-label={`Open photograph: ${tile.photo.caption}`}>
-            <div class="frame reveal-clip">
+            <div class="frame frame-drift reveal-clip">
               <Picture
                 src={tile.photo.src}
                 alt={tile.photo.alt}

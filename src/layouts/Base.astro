@@ -105,14 +105,17 @@ const jsonLd = {
   <body>
     {intro && <Intro />}
     <Header overlay={overlayHeader} />
+    <div class="scroll-progress" aria-hidden="true"></div>
     <slot />
     <Footer />
     <StickyCta />
     <Lightbox />
 
     <script>
+      import '../scripts/motion';
+
       // One observer for every scroll reveal on the page.
-      const targets = document.querySelectorAll<HTMLElement>('.reveal, .reveal-clip');
+      const targets = document.querySelectorAll<HTMLElement>('.reveal, .reveal-clip, .words-reveal');
       if (targets.length && 'IntersectionObserver' in window) {
         const io = new IntersectionObserver(
           (entries) => {

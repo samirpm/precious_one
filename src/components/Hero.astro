@@ -92,8 +92,10 @@ const thumbs = await Promise.all(
     </div>
   </div>
 
+  <div class="hero-cue" aria-hidden="true"><span></span></div>
+
   <div class="hero-panel">
-    <h1 class="display words">
+    <h1 class="display words words-load">
       <Words text="Your baby’s first days, photographed with tenderness." />
     </h1>
     <p class="hero-sub rise" style="--r: 0.75s">
@@ -354,8 +356,46 @@ const thumbs = await Promise.all(
     }
   }
 
+  /* A thin line at the foot of the hero with a travelling sand segment. */
+  .hero-cue {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .hero-cue {
+      display: block;
+      position: absolute;
+      left: calc(50% + 5rem);
+      bottom: 2rem;
+      width: 1px;
+      height: 3.5rem;
+      background: color-mix(in srgb, var(--color-white) 22%, transparent);
+      overflow: hidden;
+      z-index: 2;
+    }
+    .hero-cue span {
+      position: absolute;
+      inset: 0 0 auto;
+      height: 40%;
+      background: var(--color-sand);
+      transform: translateY(-100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-cue span {
+      animation: cue 2.4s var(--ease-in-out-soft) infinite;
+    }
+  }
+
+  @keyframes cue {
+    to {
+      transform: translateY(260%);
+    }
+  }
+
   /* The photograph drifts up slightly slower than the page as it leaves. */
-  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       .hero-parallax {
         inset: -12% 0 0;

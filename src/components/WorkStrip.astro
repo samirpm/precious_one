@@ -3,6 +3,7 @@ import { Picture } from 'astro:assets';
 import { photoById, photos, stripPhotoIds } from '../data/photos';
 import { whatsappLink } from '../data/studio';
 import WhatsAppIcon from './icons/WhatsAppIcon.astro';
+import Words from './Words.astro';
 
 const strip = stripPhotoIds.map(photoById);
 ---
@@ -18,7 +19,7 @@ const strip = stripPhotoIds.map(photoById);
   <div class="work-pin">
     <div class="work-stage">
       <div class="work-intro">
-        <h2 id="work-title" class="display title-lg">Recent sessions</h2>
+        <h2 id="work-title" class="display title-lg words words-reveal"><Words text="Recent sessions" /></h2>
         <p class="lede">
           Newborns, brand-new siblings and whole families, photographed in our Abu Dhabi studio.
         </p>

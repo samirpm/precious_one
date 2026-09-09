@@ -346,6 +346,14 @@ export const testimonials = [
   },
 ];
 
+// TODO: confirm these figures with the studio before launch.
+export const stats: { value: number; decimals?: number; suffix?: string; label: string; sub: string }[] = [
+  { value: 1500, suffix: '+', label: 'Little moments', sub: 'photographed with love' },
+  { value: 10, suffix: '+', label: 'Years of experience', sub: 'in Abu Dhabi' },
+  { value: 5, decimals: 1, label: 'Family rating', sub: 'on Google reviews' },
+  { value: 100, suffix: '%', label: 'Women-only team', sub: 'in a private studio' },
+];
+
 export const faqs = [
   {
     q: 'When should I book a newborn session?',

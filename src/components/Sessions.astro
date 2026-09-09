@@ -2,6 +2,7 @@
 import { Picture } from 'astro:assets';
 import { photoById } from '../data/photos';
 import { fromPrice, services } from '../data/studio';
+import Words from './Words.astro';
 
 const [feature, ...rest] = services;
 const featurePhoto = photoById(feature.photos[0]);
@@ -10,12 +11,12 @@ const featurePhoto = photoById(feature.photos[0]);
 <section id="sessions" class="section sessions" aria-labelledby="sessions-title">
   <div class="wrap">
     <div class="sessions-head">
-      <h2 id="sessions-title" class="display title-lg">Sessions</h2>
+      <h2 id="sessions-title" class="display title-lg words words-reveal"><Words text="Sessions" /></h2>
       <p class="lede">From the first two weeks to the first birthday, and the family around them.</p>
     </div>
 
     <a href={`/services/${feature.id}/`} class="feature">
-      <div class="frame feature-frame reveal-clip">
+      <div class="frame frame-drift feature-frame reveal-clip" data-tilt>
         <Picture
           src={featurePhoto.src}
           alt={featurePhoto.alt}
@@ -42,7 +43,7 @@ const featurePhoto = photoById(feature.photos[0]);
         return (
           <li>
             <a href={`/services/${service.id}/`} class="card">
-              <div class="frame card-frame reveal-clip" style={`--d: ${i * 0.08}s`}>
+              <div class="frame frame-drift card-frame reveal-clip" style={`--d: ${i * 0.08}s`} data-tilt>
                 <Picture
                   src={photo.src}
                   alt={photo.alt}

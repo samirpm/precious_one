@@ -41,7 +41,9 @@ const items = await Promise.all(
   <script type="application/json" is:inline data-lb-data set:html={JSON.stringify(items)} />
 </dialog>
 
-<!-- A small "View" disc that follows the mouse over photographs. Mouse only. -->
+<!-- A small sand dot that follows the mouse, growing into a "View" disc
+     over photographs. Mouse only; the native cursor stays visible except
+     over photographs. -->
 <div class="cursor" data-cursor aria-hidden="true"><span>View</span></div>
 
 <style>
@@ -192,23 +194,37 @@ const items = await Promise.all(
       width: 4.75rem;
       height: 4.75rem;
       border-radius: 999px;
-      background: color-mix(in srgb, var(--color-ink) 84%, transparent);
+      background: var(--color-sand);
       color: var(--color-ivory);
       font-family: var(--font-display);
       font-style: italic;
       font-size: 1.1875rem;
       pointer-events: none;
       opacity: 0;
-      transform: translate(-50%, -50%) scale(0.4);
+      transform: translate(-50%, -50%) scale(0.14);
       transition:
-        opacity 0.25s ease,
-        transform 0.4s var(--ease-out-soft);
+        opacity 0.3s ease,
+        background-color 0.35s ease,
+        transform 0.45s var(--ease-out-soft);
       will-change: transform;
     }
 
-    :global(html.cursor-on) .cursor.is-on {
+    :global(html.cursor-on) .cursor span {
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    :global(html.cursor-on) .cursor.is-live {
       opacity: 1;
+    }
+
+    :global(html.cursor-on) .cursor.is-on {
+      background: color-mix(in srgb, var(--color-ink) 84%, transparent);
       transform: translate(-50%, -50%) scale(1);
+    }
+
+    :global(html.cursor-on) .cursor.is-on span {
+      opacity: 1;
     }
 
     :global(html.cursor-on [data-lightbox]) {
@@ -296,8 +312,8 @@ const items = await Promise.all(
       lastTrigger?.focus();
     });
 
-    // "View" disc under the mouse while it is over a photograph. The move
-    // listener only exists while the pointer is over one.
+    // A sand dot follows the mouse; over a photograph it grows into a "View"
+    // disc. One rAF-throttled move listener, one element.
     const cursor = document.querySelector<HTMLElement>('[data-cursor]');
     if (cursor && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
       root.classList.add('cursor-on');
@@ -310,28 +326,32 @@ const items = await Promise.all(
         cursor.style.top = `${y}px`;
         raf = 0;
       };
-      const move = (e: PointerEvent) => {
-        x = e.clientX;
-        y = e.clientY;
-        if (!raf) raf = requestAnimationFrame(place);
-      };
-      const leave = () => {
+      document.addEventListener(
+        'pointermove',
+        (e) => {
+          x = e.clientX;
+          y = e.clientY;
+          cursor.classList.add('is-live');
+          if (!raf) raf = requestAnimationFrame(place);
+        },
+        { passive: true },
+      );
+      const settle = () => {
         active = null;
         cursor.classList.remove('is-on');
-        document.removeEventListener('pointermove', move);
       };
       document.addEventListener('pointerover', (e) => {
         const target = (e.target as Element).closest('[data-lightbox]');
         if (target === active) return;
-        if (!target) return leave();
+        if (!target) return settle();
         active = target;
-        move(e);
-        place();
         cursor.classList.add('is-on');
-        document.addEventListener('pointermove', move, { passive: true });
       });
-      document.documentElement.addEventListener('pointerleave', leave);
-      document.addEventListener('click', leave, true);
+      document.documentElement.addEventListener('pointerleave', () => {
+        settle();
+        cursor.classList.remove('is-live');
+      });
+      document.addEventListener('click', settle, true);
     }
 
     document.addEventListener('click', (e) => {

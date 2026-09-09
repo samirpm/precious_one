@@ -2,6 +2,7 @@
 import { Picture } from 'astro:assets';
 import { photoById } from '../data/photos';
 import { testimonials } from '../data/studio';
+import Words from './Words.astro';
 
 const quotes = testimonials.map((t) => ({ ...t, photo: photoById(t.photo) }));
 ---
@@ -9,11 +10,11 @@ const quotes = testimonials.map((t) => ({ ...t, photo: photoById(t.photo) }));
 <!-- Each family's words sit under a photograph from their own session. -->
 <section class="section kind" aria-labelledby="kind-title">
   <div class="wrap">
-    <h2 id="kind-title" class="display title-lg reveal">Kind words from families</h2>
+    <h2 id="kind-title" class="display title-lg words words-reveal"><Words text="Kind words from families" /></h2>
     <ul class="quotes no-scrollbar">
       {quotes.map((t, i) => (
         <li class="quote">
-          <div class="frame quote-frame reveal-clip" style={`--d: ${i * 0.12}s`}>
+          <div class="frame frame-drift quote-frame reveal-clip" style={`--d: ${i * 0.12}s`}>
             <Picture
               src={t.photo.src}
               alt={t.photo.alt}

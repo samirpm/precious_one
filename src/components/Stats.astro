@@ -1,0 +1,92 @@
+---
+import { stats } from '../data/studio';
+
+const format = (value: number, decimals = 0) =>
+  value.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+---
+
+<!-- A dark band of four figures that count up as they scroll into view. -->
+<section class="stats dark" aria-label="The studio in numbers">
+  <div class="wrap">
+    <p class="lede stats-lede reveal">Quiet confidence, earned one family at a time.</p>
+    <dl class="stats-grid">
+      {stats.map((stat, i) => (
+        <div class="stat reveal" style={`--d: ${0.1 + i * 0.1}s`}>
+          <dt class="stat-label">
+            {stat.label}
+            <span class="meta">{stat.sub}</span>
+          </dt>
+          <dd class="display stat-value">
+            <span data-count={stat.value} data-decimals={stat.decimals ?? 0} data-suffix={stat.suffix ?? ''}>
+              {format(stat.value, stat.decimals)}{stat.suffix ?? ''}
+            </span>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<style>
+  .stats {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .stats-lede {
+    max-width: 24ch;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .stats-grid {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    .stats-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .stat {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1.75rem 1.5rem 1.75rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--color-ivory) 14%, transparent);
+  }
+
+  .stat:nth-child(even) {
+    padding-left: 1.5rem;
+    border-left: 1px solid color-mix(in srgb, var(--color-ivory) 14%, transparent);
+  }
+
+  @media (min-width: 1024px) {
+    .stat {
+      padding: 2.25rem 2rem 2.25rem 0;
+    }
+    .stat + .stat {
+      padding-left: 2rem;
+      border-left: 1px solid color-mix(in srgb, var(--color-ivory) 14%, transparent);
+    }
+  }
+
+  /* Value first, label beneath; the markup keeps the term before the value. */
+  .stat-value {
+    order: -1;
+    margin: 0;
+    font-size: clamp(2.75rem, 5vw, 4.5rem);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-sand);
+  }
+
+  .stat-value span {
+    display: inline-block;
+  }
+
+  .stat-label {
+    display: grid;
+    gap: 0.15rem;
+    font-size: 1rem;
+  }
+</style>

@@ -1,11 +1,12 @@
 ---
 import { faqs, whatsappLink } from '../data/studio';
+import Words from './Words.astro';
 ---
 
 <section id="questions" class="section faq" aria-labelledby="faq-title">
   <div class="wrap faq-grid">
     <div class="faq-intro">
-      <h2 id="faq-title" class="display title-lg reveal">Questions parents ask</h2>
+      <h2 id="faq-title" class="display title-lg words words-reveal"><Words text="Questions parents ask" /></h2>
       <p class="prose-soft reveal" style="--d: 0.1s">
         Anything else? <a class="link-line" href={whatsappLink('Hello Precious One, I have a question about a session.')} target="_blank" rel="noopener">Ask us on WhatsApp</a>.
       </p>

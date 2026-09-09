@@ -3,6 +3,7 @@ import { Picture } from 'astro:assets';
 import { photoById } from '../data/photos';
 import { studio, telLink, whatsappLink } from '../data/studio';
 import WhatsAppIcon from './icons/WhatsAppIcon.astro';
+import Words from './Words.astro';
 
 interface Props {
   /** Pre-filled WhatsApp message, e.g. naming the session the visitor was reading about. */
@@ -17,7 +18,7 @@ const photo = photoById(photoId);
 <section id="contact" class="section contact" aria-labelledby="contact-title" data-contact>
   <div class="wrap contact-grid">
     <div class="contact-body">
-      <h2 id="contact-title" class="display title-lg reveal">Let’s plan your session</h2>
+      <h2 id="contact-title" class="display title-lg words words-reveal"><Words text="Let’s plan your session" /></h2>
       <p class="lede reveal" style="--d: 0.1s">
         Send us your due date, or your baby’s age, and the kind of photographs you have in mind. We reply the same day.
       </p>
@@ -49,7 +50,7 @@ const photo = photoById(photoId);
       </dl>
     </div>
 
-    <div class="frame contact-frame reveal-clip">
+    <div class="frame frame-drift contact-frame reveal-clip">
       <Picture
         src={photo.src}
         alt={photo.alt}

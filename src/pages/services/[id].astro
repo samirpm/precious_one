@@ -1,5 +1,6 @@
 ---
 import { Picture } from 'astro:assets';
+import Words from '../../components/Words.astro';
 import Base from '../../layouts/Base.astro';
 import Contact from '../../components/Contact.astro';
 import WhatsAppIcon from '../../components/icons/WhatsAppIcon.astro';
@@ -44,7 +45,7 @@ const message = `Hello Precious One, I would like to book a ${service.name.toLow
           <span aria-hidden="true">/</span>
           <a href="/#sessions">Sessions</a>
         </nav>
-        <h1 class="display">{service.title}</h1>
+        <h1 class="display words words-load"><Words text={service.title} /></h1>
         <p class="service-hero-sub">{service.summary}</p>
         <div class="service-hero-actions">
           <a class="btn btn-primary" href={whatsappLink(message)} target="_blank" rel="noopener">

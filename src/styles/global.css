@@ -38,6 +38,54 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Lenis smooth scrolling (mouse devices only, see src/scripts/motion.ts) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+/* A hairline at the very top that fills as the page is read. */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 70;
+  background: var(--color-sand);
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    animation: progress-grow linear both;
+    animation-timeline: scroll(root);
+  }
+}
+
+@keyframes progress-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 /* Soft cross-fade between pages, with no JavaScript, where supported. */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
@@ -229,6 +277,16 @@ strong {
   transform: translateY(1px);
 }
 
+/* Buttons lean toward the mouse (variables set in src/scripts/motion.ts). */
+.btn.magnetic {
+  transform: translate(var(--mx, 0px), var(--my, 0px));
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.5s var(--ease-out-soft);
+}
+
 .btn svg {
   width: 1.1rem;
   height: 1.1rem;
@@ -300,10 +358,10 @@ strong {
 @media (prefers-reduced-motion: no-preference) {
   html.js .reveal {
     opacity: 0;
-    transform: translateY(1.25rem);
+    transform: translateY(2.25rem);
     transition:
-      opacity 0.9s var(--ease-out-soft) var(--d, 0s),
-      transform 0.9s var(--ease-out-soft) var(--d, 0s);
+      opacity 1s var(--ease-out-soft) var(--d, 0s),
+      transform 1.1s var(--ease-out-soft) var(--d, 0s);
   }
 
   html.js .reveal.is-in {
@@ -366,8 +424,21 @@ strong {
 @media (prefers-reduced-motion: no-preference) {
   html.js .words .w > span {
     transform: translateY(110%);
+  }
+
+  /* On page load (the hero and page titles) */
+  html.js .words-load .w > span {
     animation: word-rise 1s var(--ease-out-soft) both;
     animation-delay: calc(var(--start, 0.2s) + var(--i, 0) * 0.06s);
+  }
+
+  /* When scrolled into view (section headings) */
+  html.js .words-reveal .w > span {
+    transition: transform 0.9s var(--ease-out-soft) calc(var(--d, 0s) + var(--i, 0) * 0.045s);
+  }
+
+  html.js .words-reveal.is-in .w > span {
+    transform: none;
   }
 }
 
@@ -400,6 +471,30 @@ strong {
   background: var(--color-ink-soft);
 }
 
+/* Photographs in a .frame-drift frame glide slowly as they cross the screen.
+   The <picture> is made taller than its frame and slides within it, so the
+   image is never short of the edges. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .frame-drift picture {
+      position: absolute;
+      inset: -9% 0;
+      animation: frame-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+  }
+}
+
+@keyframes frame-drift {
+  from {
+    transform: translateY(-5%);
+  }
+  to {
+    transform: translateY(5%);
+  }
+}
+
 /* Keyboard and hover affordance for clickable photos */
 .frame-button {
   display: block;
@@ -419,6 +514,13 @@ strong {
   .frame-button:hover img {
     transform: scale(1.03);
   }
+}
+
+/* Photographs tilt a few degrees toward the mouse. */
+.tilt {
+  transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.45s var(--ease-out-soft);
+  will-change: transform;
 }
 
 /* ------------------------------------------------------------------ */

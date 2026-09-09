@@ -3,6 +3,7 @@ import { Picture } from 'astro:assets';
 import { photoById } from '../data/photos';
 import { whatsappLink } from '../data/studio';
 import WhatsAppIcon from './icons/WhatsAppIcon.astro';
+import Words from './Words.astro';
 
 const photo = photoById('twins');
 ---
@@ -23,7 +24,7 @@ const photo = photoById('twins');
     </div>
   </div>
   <div class="moment-panel reveal">
-    <p id="moment-title" class="display title-md">“A comfortable family makes beautiful photographs.”</p>
+    <p id="moment-title" class="display title-md words words-reveal"><Words text="“A comfortable family makes beautiful photographs.”" /></p>
     <p class="moment-text">
       One family at a time, at your baby’s pace, in a warm and private studio. That is the whole method.
     </p>
@@ -93,7 +94,7 @@ const photo = photoById('twins');
     }
   }
 
-  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       .moment-parallax {
         inset: -14% 0;
