@@ -6,6 +6,7 @@
 # astro build output and generated types
 /dist/
 /.astro/
+/.next/
 
 # misc
 .DS_Store
@@ -18,7 +19,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
 
 # hosting
@@ -28,19 +29,30 @@ yarn-error.log*
 # screenshots and debug images
 screenshot-*.png
 screenshots-*/
+screenshots/
+
+# test and debug scripts
 tmp/
 test-*.mjs
+
+# media and large assets
+*.mp4
+*.webp
+assets/video_frames/
+assets/*.mp4
+assets/WhatsApp*
 
 # non-essential source assets
 assets/
 camera.obj
+public/models/
 
-# AI agent configs
+# AI agent configs and logs
 .claude/
 .playwright-mcp/
 opencode.json
 AGENTS.md
 CLAUDE.md
 
-# unused 3D model manifest
-public/models/
+# Next.js leftovers
+next-env.d.ts
