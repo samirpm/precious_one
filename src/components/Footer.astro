@@ -1,5 +1,6 @@
 ---
 import { studio, services, telLink, whatsappLink } from '../data/studio';
+import Words from './Words.astro';
 
 const year = new Date().getFullYear();
 ---
@@ -43,6 +44,8 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
+    <p class="display footer-mark words words-reveal" aria-hidden="true"><Words text="Precious One" /></p>
+
     <div class="footer-bottom">
       <p class="meta">© {year} {studio.name}</p>
       <p class="meta">Made with love in {studio.city}</p>
@@ -51,6 +54,16 @@ const year = new Date().getFullYear();
 </footer>
 
 <style>
+  .footer-mark {
+    margin-top: clamp(2.5rem, 6vw, 5rem);
+    font-size: clamp(3.75rem, 13.5vw, 13.5rem);
+    line-height: 0.85;
+    letter-spacing: -0.03em;
+    color: color-mix(in srgb, var(--color-ivory) 16%, transparent);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
   .footer {
     padding-block: clamp(3.5rem, 7vw, 6rem) clamp(2rem, 4vw, 3rem);
   }

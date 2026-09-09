@@ -94,8 +94,15 @@ html.lenis body {
 
   ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation-duration: 0.45s;
+    animation-duration: 0.5s;
     animation-timing-function: ease;
+  }
+
+  /* Photographs with a view-transition-name fly from a session card into
+     that session's page hero. */
+  ::view-transition-group(*) {
+    animation-duration: 0.8s;
+    animation-timing-function: var(--ease-in-out-soft);
   }
 }
 
@@ -220,6 +227,17 @@ strong {
 
 .section {
   padding-block: clamp(4.5rem, 9vw, 8.5rem);
+}
+
+/* Everything after the hero paints above it, so the hero photograph can
+   hold still and be covered as the page scrolls (see Hero.astro). */
+:where(main > :not(.hero)) {
+  position: relative;
+  z-index: 1;
+}
+
+:where(main > section) {
+  background-color: var(--color-ivory);
 }
 
 .section-tight {
@@ -424,27 +442,32 @@ strong {
 @media (prefers-reduced-motion: no-preference) {
   html.js .words .w > span {
     transform: translateY(110%);
+    filter: blur(6px);
   }
 
   /* On page load (the hero and page titles) */
   html.js .words-load .w > span {
-    animation: word-rise 1s var(--ease-out-soft) both;
+    animation: word-rise 1.1s var(--ease-out-soft) both;
     animation-delay: calc(var(--start, 0.2s) + var(--i, 0) * 0.06s);
   }
 
   /* When scrolled into view (section headings) */
   html.js .words-reveal .w > span {
-    transition: transform 0.9s var(--ease-out-soft) calc(var(--d, 0s) + var(--i, 0) * 0.045s);
+    transition:
+      transform 1s var(--ease-out-soft) calc(var(--d, 0s) + var(--i, 0) * 0.05s),
+      filter 1s var(--ease-out-soft) calc(var(--d, 0s) + var(--i, 0) * 0.05s);
   }
 
   html.js .words-reveal.is-in .w > span {
     transform: none;
+    filter: blur(0);
   }
 }
 
 @keyframes word-rise {
   to {
     transform: none;
+    filter: blur(0);
   }
 }
 

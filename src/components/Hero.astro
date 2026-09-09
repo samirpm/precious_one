@@ -138,15 +138,31 @@ const thumbs = await Promise.all(
     inset: 0;
   }
 
+  /* Slides change with a wipe from the right: the incoming photograph is
+     unclipped over the outgoing one, which stays put underneath. */
   .slide {
     position: absolute;
     inset: 0;
-    opacity: 0;
-    transition: opacity 1.6s ease;
+    visibility: hidden;
+    clip-path: inset(0 0 0 100%);
+  }
+
+  .slide.is-leaving {
+    visibility: visible;
+    clip-path: inset(0);
+    z-index: 1;
   }
 
   .slide.is-active {
-    opacity: 1;
+    visibility: visible;
+    clip-path: inset(0);
+    z-index: 2;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .slide.is-active {
+      transition: clip-path 1.3s var(--ease-in-out-soft);
+    }
   }
 
   .slide :global(img) {
@@ -412,6 +428,42 @@ const thumbs = await Promise.all(
     }
   }
 
+  /* On large screens the photograph holds still while the next section
+     slides up over it, like a print being covered by the next page. The
+     media moves down exactly as fast as the page scrolls up. */
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .hero {
+        z-index: 0;
+      }
+
+      .hero-media,
+      .hero-foot,
+      .hero-cue {
+        animation-name: hero-hold;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: view();
+        animation-range: exit 0% exit 100%;
+      }
+
+      .hero-foot {
+        animation-name: rise, hero-hold;
+        animation-timing-function: var(--ease-out-soft), linear;
+        animation-fill-mode: forwards, both;
+        animation-duration: 0.9s, auto;
+        animation-delay: calc(var(--start, 0.2s) + var(--r, 0.8s)), 0s;
+        animation-timeline: auto, view();
+      }
+
+      @keyframes hero-hold {
+        to {
+          translate: 0 100%;
+        }
+      }
+    }
+  }
+
   /* Page-load choreography: words rise, then the supporting copy. */
   @media (prefers-reduced-motion: no-preference) {
     :global(html.js) .rise {
@@ -419,6 +471,11 @@ const thumbs = await Promise.all(
       transform: translateY(0.75rem);
       animation: rise 0.9s var(--ease-out-soft) forwards;
       animation-delay: calc(var(--start, 0.2s) + var(--r, 0.8s));
+    }
+    :global(html.js) .hero-cue {
+      opacity: 0;
+      animation: fade-in 1s ease forwards;
+      animation-delay: calc(var(--start, 0.2s) + 1.3s);
     }
     :global(html.js) .hero-panel {
       animation: panel-in 1s var(--ease-out-soft) both;
@@ -433,6 +490,12 @@ const thumbs = await Promise.all(
     to {
       opacity: 1;
       transform: none;
+    }
+  }
+
+  @keyframes fade-in {
+    to {
+      opacity: 1;
     }
   }
 
@@ -482,7 +545,13 @@ const thumbs = await Promise.all(
     const show = (next: number) => {
       upgrade();
       index = (next + slides.length) % slides.length;
-      slides.forEach((s, i) => s.classList.toggle('is-active', i === index));
+      slides.forEach((s, i) => {
+        if (s.classList.contains('is-active') && i !== index) {
+          s.classList.add('is-leaving');
+          window.setTimeout(() => s.classList.remove('is-leaving'), 1400);
+        }
+        s.classList.toggle('is-active', i === index);
+      });
       dots.forEach((d, i) => {
         d.classList.toggle('is-active', i === index);
         d.setAttribute('aria-pressed', String(i === index));

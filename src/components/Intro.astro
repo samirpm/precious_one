@@ -21,7 +21,7 @@ import { studio } from '../data/studio';
     justify-items: center;
     gap: 1.25rem;
     background: var(--color-ivory);
-    animation: intro-out 0.7s var(--ease-in-out-soft) 1.35s both;
+    animation: intro-out 0.85s var(--ease-in-out-soft) 1.35s both;
     pointer-events: none;
   }
 
@@ -52,7 +52,7 @@ import { studio } from '../data/studio';
 
   @keyframes intro-out {
     to {
-      opacity: 0;
+      transform: translateY(-100%);
       visibility: hidden;
     }
   }

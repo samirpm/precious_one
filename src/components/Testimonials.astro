@@ -5,36 +5,51 @@ import { testimonials } from '../data/studio';
 import Words from './Words.astro';
 
 const quotes = testimonials.map((t) => ({ ...t, photo: photoById(t.photo) }));
+// On large screens the cards sit on a 3D ring that turns as you scroll. A ring
+// wants six faces, so the three quotes appear twice; the copies are hidden
+// from assistive technology and from every other layout.
+const faces = [...quotes, ...quotes].map((q, i) => ({ ...q, i, copy: i >= quotes.length }));
 ---
 
-<!-- Each family's words sit under a photograph from their own session. -->
+<!--
+  Each family's words sit under a photograph from their own session. Phones
+  get a swipe strip, tablets a grid, and large screens a pinned 3D ring that
+  rotates with the scroll (pure CSS scroll-driven animation).
+-->
 <section class="section kind" aria-labelledby="kind-title">
-  <div class="wrap">
-    <h2 id="kind-title" class="display title-lg words words-reveal"><Words text="Kind words from families" /></h2>
-    <ul class="quotes no-scrollbar">
-      {quotes.map((t, i) => (
-        <li class="quote">
-          <div class="frame frame-drift quote-frame reveal-clip" style={`--d: ${i * 0.12}s`}>
-            <Picture
-              src={t.photo.src}
-              alt={t.photo.alt}
-              widths={[400, 640, 900]}
-              sizes="(min-width: 768px) 30vw, 84vw"
-              formats={['avif', 'webp']}
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <blockquote class="reveal" style={`--d: ${0.15 + i * 0.12}s`}>
-            <p class="quote-text">“{t.quote}”</p>
-            <footer>
-              <cite class="quote-name">{t.name}</cite>
-              <span class="meta">{t.detail}</span>
-            </footer>
-          </blockquote>
-        </li>
-      ))}
-    </ul>
+  <div class="kind-pin">
+    <div class="kind-stage">
+      <div class="wrap kind-wrap">
+        <h2 id="kind-title" class="display title-lg words words-reveal"><Words text="Kind words from families" /></h2>
+        <div class="kind-scene">
+          <ul class="quotes no-scrollbar">
+            {faces.map((t) => (
+              <li class:list={['quote', { 'is-copy': t.copy }]} style={`--i: ${t.i}`} aria-hidden={t.copy ? 'true' : undefined}>
+                <div class="frame frame-drift quote-frame reveal-clip" style={`--d: ${(t.i % 3) * 0.12}s`}>
+                  <Picture
+                    src={t.photo.src}
+                    alt={t.copy ? '' : t.photo.alt}
+                    widths={[400, 640, 900]}
+                    sizes="(min-width: 768px) 30vw, 84vw"
+                    formats={['avif', 'webp']}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <blockquote class="reveal" style={`--d: ${0.15 + (t.i % 3) * 0.12}s`}>
+                  <p class="quote-text">“{t.quote}”</p>
+                  <footer>
+                    <cite class="quote-name">{t.name}</cite>
+                    <span class="meta">{t.detail}</span>
+                  </footer>
+                </blockquote>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <p class="meta kind-hint" aria-hidden="true">Keep scrolling</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -47,6 +62,10 @@ const quotes = testimonials.map((t) => ({ ...t, photo: photoById(t.photo) }));
   .kind h2 {
     margin-bottom: clamp(2rem, 4vw, 3.5rem);
     max-width: 8em;
+  }
+
+  .kind-hint {
+    display: none;
   }
 
   .quotes {
@@ -66,6 +85,10 @@ const quotes = testimonials.map((t) => ({ ...t, photo: photoById(t.photo) }));
     flex: 0 0 84vw;
     max-width: 30rem;
     scroll-snap-align: start;
+  }
+
+  .quote.is-copy {
+    display: none;
   }
 
   .quote-frame {
@@ -115,5 +138,97 @@ const quotes = testimonials.map((t) => ({ ...t, photo: photoById(t.photo) }));
     font-style: normal;
     font-weight: 500;
     font-size: 0.9375rem;
+  }
+
+  /* The ring: pinned for three screens while the cards turn past. */
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .kind {
+        padding-block: 0;
+      }
+
+      .kind-pin {
+        height: 320vh;
+        view-timeline-name: --kind;
+        view-timeline-axis: block;
+      }
+
+      .kind-stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .kind-wrap {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        height: 100%;
+        padding-top: 6.5rem;
+        padding-bottom: 2.5rem;
+      }
+
+      .kind h2 {
+        margin-bottom: 0;
+      }
+
+      .kind-hint {
+        display: block;
+      }
+
+      .kind-scene {
+        position: relative;
+        min-height: 30rem;
+        perspective: 1500px;
+        perspective-origin: 50% 45%;
+      }
+
+      .quotes {
+        --r: 24rem;
+        position: absolute;
+        inset: 0;
+        display: block;
+        margin: 0;
+        padding: 0;
+        overflow: visible;
+        transform-style: preserve-3d;
+        animation: ring-spin linear both;
+        animation-timeline: --kind;
+        animation-range: contain 0% contain 100%;
+        will-change: transform;
+      }
+
+      .quote,
+      .quote.is-copy,
+      .quote:nth-child(2) {
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 21rem;
+        max-width: none;
+        margin: 0;
+        transform: translate(-50%, -50%) rotateY(calc(var(--i) * 60deg)) translateZ(var(--r));
+        backface-visibility: hidden;
+      }
+
+      .quote-frame {
+        aspect-ratio: 5 / 4;
+        margin-bottom: 1rem;
+      }
+
+      .quote-text {
+        font-size: 1.25rem;
+      }
+
+      @keyframes ring-spin {
+        from {
+          transform: rotateY(0deg);
+        }
+        to {
+          transform: rotateY(-300deg);
+        }
+      }
+    }
   }
 </style>

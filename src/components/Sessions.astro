@@ -16,7 +16,7 @@ const featurePhoto = photoById(feature.photos[0]);
     </div>
 
     <a href={`/services/${feature.id}/`} class="feature">
-      <div class="frame frame-drift feature-frame reveal-clip" data-tilt>
+      <div class="frame frame-drift feature-frame reveal-clip" data-tilt style={`view-transition-name: service-${feature.id}`}>
         <Picture
           src={featurePhoto.src}
           alt={featurePhoto.alt}
@@ -43,7 +43,7 @@ const featurePhoto = photoById(feature.photos[0]);
         return (
           <li>
             <a href={`/services/${service.id}/`} class="card">
-              <div class="frame frame-drift card-frame reveal-clip" style={`--d: ${i * 0.08}s`} data-tilt>
+              <div class="frame frame-drift card-frame reveal-clip" style={`--d: ${i * 0.08}s; view-transition-name: service-${service.id}`} data-tilt>
                 <Picture
                   src={photo.src}
                   alt={photo.alt}
