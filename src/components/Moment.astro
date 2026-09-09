@@ -50,7 +50,7 @@ const photo = photoById('twins');
 
   .moment-parallax {
     position: absolute;
-    inset: 0;
+    inset: -12% 0;
   }
 
   .moment-panel {
@@ -94,22 +94,4 @@ const photo = photoById('twins');
     }
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .moment-parallax {
-        inset: -14% 0;
-        animation: moment-drift linear both;
-        animation-timeline: view();
-        animation-range: entry 0% exit 100%;
-      }
-      @keyframes moment-drift {
-        from {
-          transform: translateY(-6%);
-        }
-        to {
-          transform: translateY(6%);
-        }
-      }
-    }
-  }
 </style>

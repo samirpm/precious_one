@@ -163,126 +163,132 @@ const strip = stripPhotoIds.map(photoById);
     margin-top: 0.5rem;
   }
 
-  /* Pinned, scroll-driven version for large screens */
-  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .work-pin {
-        height: 560vh;
-        view-timeline-name: --work;
-        view-timeline-axis: block;
-      }
+  /* Pinned version (ScrollTrigger pins the section and slides the track).
+     Every screen size; the CSS above stays as the reduced-motion layout. */
+  :global(html.motion) .work-stage {
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: 0;
+    overflow: hidden;
+  }
 
-      .work-stage {
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        padding: 0;
-        overflow: hidden;
-      }
+  :global(html.motion) .work-intro {
+    margin: 0;
+  }
 
-      .work-intro {
-        flex: 0 0 32vw;
-        margin: 0;
-        padding-left: var(--gutter);
-        padding-right: 2vw;
-      }
+  :global(html.motion) .work-intro .lede {
+    margin-top: 0.75rem;
+  }
 
-      .hint-scroll {
-        display: inline;
-      }
+  :global(html.motion) .work-intro-actions {
+    margin-top: 1.1rem;
+  }
 
-      .hint-swipe {
-        display: none;
-      }
+  :global(html.motion) .work-hint {
+    margin-top: 1rem;
+  }
 
-      .work-progress {
-        display: block;
-        margin-top: 1rem;
-        width: min(100%, 14rem);
-        height: 1px;
-        background: color-mix(in srgb, var(--color-ivory) 20%, transparent);
-      }
+  :global(html.motion) .hint-scroll {
+    display: inline;
+  }
 
-      .work-progress span {
-        display: block;
-        height: 100%;
-        background: var(--color-sand);
-        transform: scaleX(0);
-        transform-origin: left;
-        animation: work-progress linear both;
-        animation-timeline: --work;
-        animation-range: contain 0% contain 100%;
-      }
+  :global(html.motion) .hint-swipe {
+    display: none;
+  }
 
-      @keyframes work-progress {
-        to {
-          transform: scaleX(1);
-        }
-      }
+  :global(html.motion) .work-progress {
+    display: block;
+    margin-top: 0.9rem;
+    width: min(100%, 14rem);
+    height: 1px;
+    background: color-mix(in srgb, var(--color-ivory) 20%, transparent);
+  }
 
-      .work-viewport {
-        flex: 1 1 auto;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-      }
+  :global(html.motion) .work-progress span {
+    display: block;
+    height: 100%;
+    background: var(--color-sand);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
 
-      .work-track {
-        overflow: visible;
-        scroll-snap-type: none;
-        align-items: center;
-        height: 86vh;
-        gap: 2.5vw;
-        padding: 0 8vw 0 2vw;
-        animation: work-slide linear both;
-        animation-timeline: --work;
-        animation-range: contain 0% contain 100%;
-        will-change: transform;
-      }
+  :global(html.motion) .work-track {
+    overflow: visible;
+    scroll-snap-type: none;
+    will-change: transform;
+  }
 
-      .work-item {
-        flex: 0 0 auto;
-        max-width: none;
-      }
+  @media (max-width: 1023px) {
+    :global(html.motion) .work-intro .lede {
+      font-size: 1.125rem;
+      max-width: 34ch;
+    }
+    :global(html.motion) .work-item {
+      flex: 0 0 78vw;
+    }
+  }
 
-      /* Film-strip rhythm: alternate heights and a vertical offset. */
-      .work-item .frame {
-        height: 64vh;
-        width: calc(64vh * 1.5);
-        aspect-ratio: auto;
-      }
+  @media (min-width: 1024px) {
+    :global(html.motion) .work-stage {
+      flex-direction: row;
+      align-items: center;
+      gap: 0;
+    }
 
-      .work-item:nth-child(even) .frame {
-        height: 50vh;
-        width: calc(50vh * 1.5);
-      }
+    :global(html.motion) .work-intro {
+      flex: 0 0 32vw;
+      padding-left: var(--gutter);
+      padding-right: 2vw;
+    }
 
-      .work-item:nth-child(even) {
-        align-self: flex-start;
-        margin-top: 4vh;
-      }
+    :global(html.motion) .work-viewport {
+      flex: 1 1 auto;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
 
-      .work-item:nth-child(4n + 3) {
-        align-self: flex-end;
-        margin-bottom: 4vh;
-      }
+    :global(html.motion) .work-track {
+      align-items: center;
+      height: 86vh;
+      gap: 2.5vw;
+      padding: 0 8vw 0 2vw;
+    }
 
-      .work-end {
-        padding-left: 3vw;
-        max-width: 26rem;
-      }
+    :global(html.motion) .work-item {
+      flex: 0 0 auto;
+      max-width: none;
+    }
 
-      @keyframes work-slide {
-        from {
-          transform: translateX(0);
-        }
-        to {
-          transform: translateX(calc(68vw - 100%));
-        }
-      }
+    /* Film-strip rhythm: alternate heights and a vertical offset. */
+    :global(html.motion) .work-item .frame {
+      height: 64vh;
+      width: calc(64vh * 1.5);
+      aspect-ratio: auto;
+    }
+
+    :global(html.motion) .work-item:nth-child(even) .frame {
+      height: 50vh;
+      width: calc(50vh * 1.5);
+    }
+
+    :global(html.motion) .work-item:nth-child(even) {
+      align-self: flex-start;
+      margin-top: 4vh;
+    }
+
+    :global(html.motion) .work-item:nth-child(4n + 3) {
+      align-self: flex-end;
+      margin-bottom: 4vh;
+    }
+
+    :global(html.motion) .work-end {
+      padding-left: 3vw;
+      max-width: 26rem;
     }
   }
 

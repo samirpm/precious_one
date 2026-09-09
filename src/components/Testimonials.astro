@@ -140,95 +140,73 @@ const faces = [...quotes, ...quotes].map((q, i) => ({ ...q, i, copy: i >= quotes
     font-size: 0.9375rem;
   }
 
-  /* The ring: pinned for three screens while the cards turn past. */
-  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .kind {
-        padding-block: 0;
-      }
+  /* The ring: ScrollTrigger pins the section and turns the cards past.
+     Every screen size; the layouts above remain for reduced motion. */
+  :global(html.motion) .kind {
+    padding-block: 0;
+  }
 
-      .kind-pin {
-        height: 320vh;
-        view-timeline-name: --kind;
-        view-timeline-axis: block;
-      }
+  :global(html.motion) .kind-stage {
+    height: 100svh;
+    overflow: hidden;
+  }
 
-      .kind-stage {
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        overflow: hidden;
-      }
+  :global(html.motion) .kind-wrap {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100%;
+    padding-top: clamp(5.5rem, 10vh, 7rem);
+    padding-bottom: 2rem;
+  }
 
-      .kind-wrap {
-        display: grid;
-        grid-template-rows: auto 1fr auto;
-        height: 100%;
-        padding-top: 6.5rem;
-        padding-bottom: 2.5rem;
-      }
+  :global(html.motion) .kind h2 {
+    margin-bottom: 0;
+  }
 
-      .kind h2 {
-        margin-bottom: 0;
-      }
+  :global(html.motion) .kind-hint {
+    display: block;
+  }
 
-      .kind-hint {
-        display: block;
-      }
+  :global(html.motion) .kind-scene {
+    --card: min(21rem, 64vw);
+    --r: min(24rem, 60vw);
+    position: relative;
+    min-height: min(30rem, 58svh);
+    perspective: 1500px;
+    perspective-origin: 50% 45%;
+  }
 
-      .kind-scene {
-        position: relative;
-        min-height: 30rem;
-        perspective: 1500px;
-        perspective-origin: 50% 45%;
-      }
+  :global(html.motion) .quotes {
+    position: absolute;
+    inset: 0;
+    display: block;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
 
-      .quotes {
-        --r: 24rem;
-        position: absolute;
-        inset: 0;
-        display: block;
-        margin: 0;
-        padding: 0;
-        overflow: visible;
-        transform-style: preserve-3d;
-        animation: ring-spin linear both;
-        animation-timeline: --kind;
-        animation-range: contain 0% contain 100%;
-        will-change: transform;
-      }
+  :global(html.motion) .quote,
+  :global(html.motion) .quote.is-copy,
+  :global(html.motion) .quote:nth-child(2) {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--card);
+    max-width: none;
+    margin: 0;
+    transform: translate(-50%, -50%) rotateY(calc(var(--i) * 60deg)) translateZ(var(--r));
+    backface-visibility: hidden;
+  }
 
-      .quote,
-      .quote.is-copy,
-      .quote:nth-child(2) {
-        display: block;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        width: 21rem;
-        max-width: none;
-        margin: 0;
-        transform: translate(-50%, -50%) rotateY(calc(var(--i) * 60deg)) translateZ(var(--r));
-        backface-visibility: hidden;
-      }
+  :global(html.motion) .quote-frame {
+    aspect-ratio: 5 / 4;
+    margin-bottom: 0.9rem;
+  }
 
-      .quote-frame {
-        aspect-ratio: 5 / 4;
-        margin-bottom: 1rem;
-      }
-
-      .quote-text {
-        font-size: 1.25rem;
-      }
-
-      @keyframes ring-spin {
-        from {
-          transform: rotateY(0deg);
-        }
-        to {
-          transform: rotateY(-300deg);
-        }
-      }
-    }
+  :global(html.motion) .quote-text {
+    font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
   }
 </style>

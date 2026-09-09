@@ -135,7 +135,7 @@ const thumbs = await Promise.all(
 
   .hero-parallax {
     position: absolute;
-    inset: 0;
+    inset: -12% 0 0;
   }
 
   /* Slides change with a wipe from the right: the incoming photograph is
@@ -410,65 +410,11 @@ const thumbs = await Promise.all(
     }
   }
 
-  /* The photograph drifts up slightly slower than the page as it leaves. */
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .hero-parallax {
-        inset: -12% 0 0;
-        animation: hero-drift linear both;
-        animation-timeline: view();
-        animation-range: exit 0% exit 100%;
-      }
-
-      @keyframes hero-drift {
-        to {
-          transform: translateY(12%);
-        }
-      }
-    }
-  }
-
-  /* On large screens the photograph holds still while the next section
-     slides up over it, like a print being covered by the next page. The
-     media moves down exactly as fast as the page scrolls up. */
-  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .hero {
-        z-index: 0;
-      }
-
-      .hero-media,
-      .hero-foot,
-      .hero-cue {
-        animation-name: hero-hold;
-        animation-timing-function: linear;
-        animation-fill-mode: both;
-        animation-timeline: view();
-        animation-range: exit 0% exit 100%;
-      }
-
-      .hero-foot {
-        animation-name: rise, hero-hold;
-        animation-timing-function: var(--ease-out-soft), linear;
-        animation-fill-mode: forwards, both;
-        animation-duration: 0.9s, auto;
-        animation-delay: calc(var(--start, 0.2s) + var(--r, 0.8s)), 0s;
-        animation-timeline: auto, view();
-      }
-
-      @keyframes hero-hold {
-        to {
-          translate: 0 100%;
-        }
-      }
-    }
-  }
-
   /* Page-load choreography: words rise, then the supporting copy. */
   @media (prefers-reduced-motion: no-preference) {
     :global(html.js) .rise {
       opacity: 0;
-      transform: translateY(0.75rem);
+      translate: 0 0.75rem;
       animation: rise 0.9s var(--ease-out-soft) forwards;
       animation-delay: calc(var(--start, 0.2s) + var(--r, 0.8s));
     }
@@ -489,7 +435,7 @@ const thumbs = await Promise.all(
   @keyframes rise {
     to {
       opacity: 1;
-      transform: none;
+      translate: 0 0;
     }
   }
 
@@ -502,11 +448,11 @@ const thumbs = await Promise.all(
   @keyframes panel-in {
     from {
       opacity: 0;
-      transform: translateY(1.5rem);
+      translate: 0 1.5rem;
     }
     to {
       opacity: 1;
-      transform: none;
+      translate: 0 0;
     }
   }
 </style>

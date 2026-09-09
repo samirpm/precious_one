@@ -139,32 +139,4 @@ const tiles = [
     }
   }
 
-  /* Each tile drifts at a slightly different speed as it crosses the screen. */
-  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .tile {
-        animation: drift linear both;
-        animation-timeline: view();
-        animation-range: entry 0% exit 100%;
-        --from: 2.5rem;
-        --to: -2.5rem;
-      }
-      .tile:nth-child(3n + 2) {
-        --from: 4.5rem;
-        --to: -4.5rem;
-      }
-      .tile:nth-child(3n) {
-        --from: 1rem;
-        --to: -1rem;
-      }
-      @keyframes drift {
-        from {
-          transform: translateY(var(--from));
-        }
-        to {
-          transform: translateY(var(--to));
-        }
-      }
-    }
-  }
 </style>

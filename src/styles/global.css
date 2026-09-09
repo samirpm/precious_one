@@ -70,21 +70,7 @@ html.lenis body {
   pointer-events: none;
 }
 
-@supports (animation-timeline: scroll()) {
-  .scroll-progress {
-    animation: progress-grow linear both;
-    animation-timeline: scroll(root);
-  }
-}
 
-@keyframes progress-grow {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
 
 /* Soft cross-fade between pages, with no JavaScript, where supported. */
 @media (prefers-reduced-motion: no-preference) {
@@ -295,14 +281,13 @@ strong {
   transform: translateY(1px);
 }
 
-/* Buttons lean toward the mouse (variables set in src/scripts/motion.ts). */
+/* Buttons lean toward the mouse (variables eased by src/scripts/motion.ts). */
 .btn.magnetic {
-  transform: translate(var(--mx, 0px), var(--my, 0px));
+  transform: translate(calc(var(--mx, 0) * 1px), calc(var(--my, 0) * 1px));
   transition:
     background-color 0.25s ease,
     border-color 0.25s ease,
-    color 0.25s ease,
-    transform 0.5s var(--ease-out-soft);
+    color 0.25s ease;
 }
 
 .btn svg {
@@ -494,28 +479,12 @@ strong {
   background: var(--color-ink-soft);
 }
 
-/* Photographs in a .frame-drift frame glide slowly as they cross the screen.
-   The <picture> is made taller than its frame and slides within it, so the
-   image is never short of the edges. */
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .frame-drift picture {
-      position: absolute;
-      inset: -9% 0;
-      animation: frame-drift linear both;
-      animation-timeline: view();
-      animation-range: entry 0% exit 100%;
-    }
-  }
-}
-
-@keyframes frame-drift {
-  from {
-    transform: translateY(-5%);
-  }
-  to {
-    transform: translateY(5%);
-  }
+/* Photographs in a .frame-drift frame glide slowly as they cross the screen
+   (driven by ScrollTrigger). The <picture> is taller than its frame and
+   slides within it, so the image is never short of the edges. */
+html.motion .frame-drift picture {
+  position: absolute;
+  inset: -9% 0;
 }
 
 /* Keyboard and hover affordance for clickable photos */
@@ -541,9 +510,19 @@ strong {
 
 /* Photographs tilt a few degrees toward the mouse. */
 .tilt {
-  transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-  transition: transform 0.45s var(--ease-out-soft);
+  transform: perspective(1100px) rotateX(calc(var(--rx, 0) * 1deg)) rotateY(calc(var(--ry, 0) * 1deg));
   will-change: transform;
+}
+
+/* When the GSAP choreography is running it owns the photograph reveals,
+   so the CSS cover panel and hover transitions step aside. */
+html.motion .reveal-clip::after {
+  display: none;
+}
+
+html.js.motion .reveal-clip img {
+  transform: none;
+  transition: none;
 }
 
 /* ------------------------------------------------------------------ */
