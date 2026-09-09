@@ -35,17 +35,20 @@ screenshots/
 tmp/
 test-*.mjs
 
-# media and large assets
+# media and large assets (root only)
 *.mp4
 *.webp
 assets/video_frames/
 assets/*.mp4
 assets/WhatsApp*
 
-# non-essential source assets
-assets/
+# non-essential root assets (NOT src/assets — fonts live there)
+/assets/
 camera.obj
 public/models/
+
+# keep src/assets/fonts tracked (needed at build time)
+!src/assets/fonts/
 
 # AI agent configs and logs
 .claude/
