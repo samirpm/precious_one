@@ -42,7 +42,7 @@ export default function LogoIntro({ onComplete }: LogoIntroProps) {
             ? 'scale-100 opacity-100 blur-0'
             : phase === 'exit'
               ? 'scale-[1.15] opacity-0'
-              : 'scale-[0.92] opacity-0 blur-[12px]'
+              : 'scale-[0.92] opacity-0 blur-[4px] md:blur-[12px]'
         }`}
       >
         <div className="relative h-40 w-40 sm:h-48 sm:w-48 md:h-56 md:w-56 lg:h-64 lg:w-64">

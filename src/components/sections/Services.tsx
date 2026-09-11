@@ -80,6 +80,11 @@ export default function Services() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
+    // Scrub (scroll-linked) parallax is honest GPU-composited work that runs on
+    // every scroll frame — skip it on mobile/touch where each frame is more
+    // expensive, keeping the section smooth. One-time reveals still play.
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
     const section = sectionRef.current;
     if (!section) return;
 
@@ -172,22 +177,24 @@ export default function Services() {
         });
       }
 
-      // Parallax float on card image
-      const img = card.querySelector('img');
-      if (img) {
-        gsap.fromTo(img,
-          { yPercent: -6 },
-          {
-            yPercent: 6,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: true,
+      // Parallax float on card image — desktop-only to keep mobile at 60fps
+      if (!isMobile) {
+        const img = card.querySelector('img');
+        if (img) {
+          gsap.fromTo(img,
+            { yPercent: -6 },
+            {
+              yPercent: 6,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true,
+              },
             },
-          },
-        );
+          );
+        }
       }
 
       // Content slides up with stagger after image reveals
@@ -292,8 +299,7 @@ export default function Services() {
             <a key={service.id}
               ref={(el) => { if (el) cardsRef.current[index] = el; }}
               href={`/services/${service.id}`}
-              className="group relative block aspect-[3/4] overflow-hidden bg-charcoal will-change-transform"
-              style={{ transformStyle: 'preserve-3d' }}
+              className="group relative block aspect-[3/4] overflow-hidden bg-charcoal"
               data-cursor="view"
               aria-label={`Explore ${service.title}`}
               onMouseMove={(e) => handleMouseMove(e, index)}
@@ -313,7 +319,7 @@ export default function Services() {
               {/* Number badge — spring-in */}
               <span
                 ref={(el) => { if (el) badgesRef.current[index] = el; }}
-                className="absolute left-5 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/30 font-sans text-[10px] tracking-widest text-white/70 backdrop-blur-sm opacity-0"
+                className="absolute left-5 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-charcoal/40 font-sans text-[10px] tracking-widest text-white/70 opacity-0 md:backdrop-blur-sm"
               >
                 {String(index + 1).padStart(2, '0')}
               </span>

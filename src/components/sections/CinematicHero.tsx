@@ -131,7 +131,7 @@ export default function CinematicHero() {
 
         <a
           href="#contact"
-          className="pointer-events-auto mt-6 sm:mt-8 inline-block rounded-full border border-white/35 px-7 py-3 sm:px-9 sm:py-3.5 font-sans text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.22em] text-white backdrop-blur-sm transition-all duration-300 hover:border-champagne hover:bg-champagne/25 hover:text-white"
+          className="pointer-events-auto mt-6 sm:mt-8 inline-block rounded-full border border-white/35 px-7 py-3 sm:px-9 sm:py-3.5 font-sans text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.22em] text-white bg-black/25 transition-all duration-300 hover:border-champagne hover:bg-champagne/25 hover:text-white md:backdrop-blur-sm"
         >
           Book a Session
         </a>

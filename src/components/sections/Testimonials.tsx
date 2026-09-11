@@ -367,7 +367,7 @@ export default function Testimonials() {
               <figure
                 key={t.name}
                 aria-hidden={i === activeIndex ? undefined : true}
-                className="absolute left-1/2 top-1/2 aspect-[4/5] w-[var(--card-w)] select-none overflow-hidden bg-[#16130F] shadow-[0_40px_90px_-30px_rgba(0,0,0,0.85)] will-change-transform"
+                className="absolute left-1/2 top-1/2 aspect-[4/5] w-[var(--card-w)] select-none overflow-hidden bg-[#16130F] shadow-[0_40px_90px_-30px_rgba(0,0,0,0.85)]"
                 style={{
                   marginLeft: 'calc(-1 * var(--card-w) / 2)',
                   marginTop: 'calc(-1 * var(--card-w) * 1.25 / 2)',
@@ -390,10 +390,10 @@ export default function Testimonials() {
                 {mobileLayout ? (
                   <>
                     <div className="absolute inset-0 bg-gradient-to-b from-[#16130F]/20 via-[#16130F]/70 to-[#16130F]" />
-                    <blockquote className="absolute inset-x-4 bottom-[72px] top-[14%] overflow-hidden font-serif text-[clamp(12px,3.6vw,15px)] font-light leading-snug text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.7)] line-clamp-5 bg-[#16130F]/70 backdrop-blur-md rounded-lg px-3 py-2">
+                    <blockquote className="absolute inset-x-4 bottom-[72px] top-[14%] overflow-hidden font-serif text-[clamp(12px,3.6vw,15px)] font-light leading-snug text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.7)] line-clamp-5 bg-[#16130F]/90 rounded-lg px-3 py-2">
                       &ldquo;{t.quote}&rdquo;
                     </blockquote>
-                    <figcaption className="absolute inset-x-0 bottom-0 border-t border-white/25 bg-black/55 px-4 py-3 backdrop-blur-sm">
+                    <figcaption className="absolute inset-x-0 bottom-0 border-t border-white/25 bg-[#16130F]/80 px-4 py-3">
                       <p className="font-serif text-[clamp(14px,4vw,17px)] font-light italic text-champagne-light">
                         {t.name}
                       </p>

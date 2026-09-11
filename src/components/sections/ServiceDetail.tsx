@@ -146,7 +146,7 @@ export default function ServiceDetail({ service }: ServiceDetailProps) {
                 href={waLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 rounded-full border border-white/30 px-7 py-3.5 font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-white backdrop-blur-sm transition-all duration-300 hover:border-champagne hover:bg-champagne/25"
+                className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-charcoal/30 px-7 py-3.5 font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-white transition-all duration-300 hover:border-champagne hover:bg-champagne/25 md:backdrop-blur-sm"
                 data-cursor="link"
               >
                 Book This Session

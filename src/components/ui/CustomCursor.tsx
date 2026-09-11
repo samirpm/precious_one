@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * CustomCursor — outer ring + inner dot that follow the mouse.
@@ -6,16 +6,26 @@ import { useEffect, useRef } from 'react';
  * - default: small dot + ring
  * - "link": ring scales up (1.6x)
  * - "image": ring scales up (2.5x) with "View" label
- * Hidden on touch devices.
+ *
+ * Only rendered on devices with a hover-capable fine pointer (mice/trackpads).
+ * Touch-only devices match `(hover: none) and (pointer: coarse)` → we render
+ * nothing at all, so no stray dot/ring can appear on phones or tablets.
  */
 export default function CustomCursor() {
   const ringRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLDivElement>(null);
 
+  // SSR-safe: both server and first client render agree on `false`, then the
+  // effect flips to the real value. On touch devices the component renders an
+  // empty fragment — nothing is painted.
+  const [enabled, setEnabled] = useState(false);
+  const [visible, setVisible] = useState(false);
+
   useEffect(() => {
-    const mq = window.matchMedia('(pointer: coarse)');
-    if (mq.matches) return;
+    const hasHoverFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!hasHoverFine) return;
+    setEnabled(true);
 
     let mouseX = 0;
     let mouseY = 0;
@@ -33,6 +43,7 @@ export default function CustomCursor() {
     const onMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
+      if (!visible) setVisible(true);
     };
 
     const tick = () => {
@@ -130,23 +141,31 @@ export default function CustomCursor() {
     };
   }, []);
 
+  if (!enabled) return null;
+
+  const cursorStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    pointerEvents: 'none',
+    zIndex: 99999,
+    willChange: 'transform',
+    opacity: visible ? 1 : 0,
+  };
+
   return (
     <>
       <div
         ref={ringRef}
         aria-hidden="true"
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
+          ...cursorStyle,
           width: 28,
           height: 28,
           border: '1.5px solid #B8977E',
           borderRadius: '50%',
-          pointerEvents: 'none',
-          zIndex: 99999,
-          transition: 'width 0.3s ease, height 0.3s ease, border-color 0.3s ease, background-color 0.3s ease',
-          willChange: 'transform',
+          transition:
+            'width 0.3s ease, height 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, opacity 0.2s ease',
           mixBlendMode: 'difference',
         }}
       />
@@ -154,16 +173,11 @@ export default function CustomCursor() {
         ref={dotRef}
         aria-hidden="true"
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
+          ...cursorStyle,
           width: 6,
           height: 6,
           backgroundColor: '#B8977E',
           borderRadius: '50%',
-          pointerEvents: 'none',
-          zIndex: 99999,
-          willChange: 'transform',
           transition: 'opacity 0.2s ease',
         }}
       />
@@ -171,16 +185,12 @@ export default function CustomCursor() {
         ref={labelRef}
         aria-hidden="true"
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
+          ...cursorStyle,
           fontSize: '9px',
           fontWeight: 500,
           letterSpacing: '0.12em',
           textTransform: 'uppercase' as const,
           color: '#fff',
-          pointerEvents: 'none',
-          zIndex: 99999,
           opacity: 0,
           transition: 'opacity 0.2s ease',
           width: 28,

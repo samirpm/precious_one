@@ -28,13 +28,13 @@ export default function Header({ isVisible }: HeaderProps) {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-700 ease-out ${
+        className={`fixed inset-x-0 top-0 z-50 transition-[transform,opacity,background-color] duration-700 ease-out will-change-transform ${
           isVisible
             ? 'translate-y-0 opacity-100'
             : '-translate-y-full opacity-0'
         } ${
           isScrolled
-            ? 'border-b border-charcoal/8 bg-ivory/95 backdrop-blur-md shadow-sm'
+            ? 'border-b border-charcoal/8 bg-ivory/95 shadow-sm md:backdrop-blur-md'
             : 'bg-transparent'
         }`}
       >

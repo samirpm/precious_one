@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import {
   motion,
   useScroll,
@@ -7,14 +7,30 @@ import {
   useReducedMotion,
 } from "framer-motion";
 
+/** Detect mobile viewport — used to strip expensive 3D down to 2D. */
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)");
+    setMobile(mql.matches);
+    const fn = (e: MediaQueryListEvent) => setMobile(e.matches);
+    mql.addEventListener("change", fn);
+    return () => mql.removeEventListener("change", fn);
+  }, []);
+  return mobile;
+}
+
 interface ImageCardProps {
   src: string;
   onLoad?: () => void;
+  isMobile?: boolean;
 }
 
-const ImageCard = ({ src, onLoad }: ImageCardProps) => {
+const ImageCard = ({ src, onLoad, isMobile }: ImageCardProps) => {
   return (
-    <div className="w-full h-[200px] sm:h-[300px] md:h-[400px] flex-shrink-0 bg-charcoal transition-transform duration-300 hover:scale-[1.02] cursor-pointer relative will-change-transform preserve-3d backface-hidden overflow-hidden">
+    <div
+      className={`w-full h-[200px] sm:h-[300px] md:h-[400px] flex-shrink-0 bg-charcoal cursor-pointer relative overflow-hidden ${isMobile ? "" : "transition-transform duration-300 hover:scale-[1.02] will-change-transform"}`}
+    >
       <img
         src={src}
         alt="Portfolio photograph"
@@ -57,18 +73,20 @@ export default function ParallaxUnfurlingGallery({
 }: ParallaxUnfurlingGalleryProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+  const isMobile = useIsMobile();
 
-  // Scroll progress through the pinned section, driven by the page scroll.
-  // Bidirectional — rewinds on the way up, so the unfurling plays again on
-  // every scroll-down pass through the section.
+  // Spring config — lighter on mobile to cut per-frame cost.
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end end"],
   });
 
-  const smooth = useSpring(scrollYProgress, { stiffness: 100, damping: 20, mass: 0.5 });
+  const smooth = useSpring(scrollYProgress, isMobile
+    ? { stiffness: 120, damping: 30, mass: 0.3 }
+    : { stiffness: 100, damping: 20, mass: 0.5 },
+  );
 
-  // 3D matrix motion
+  // ── Desktop: full 3D matrix ──
   const rotateY = useTransform(smooth, [0, 1], [-45, -8]);
   const rotateX = useTransform(smooth, [0, 1], [24, 4]);
   const rotateZ = useTransform(smooth, [0, 1], [15, 2]);
@@ -76,13 +94,23 @@ export default function ParallaxUnfurlingGallery({
   const scale = useTransform(smooth, [0, 0.18], [1.18, 1]);
   const opacity = useTransform(smooth, [0, 0.12], [0.5, 1]);
 
+  // ── Mobile: flat2D scroll — just opacity + simple Y slide ──
+  const opacityM = useTransform(smooth, [0, 0.2], [0.4, 1]);
+  const ySlide = useTransform(smooth, [0, 1], ["8%", "-8%"]);
+
   // Column parallax — each track drifts at its own rate while scrolling.
+  // Mobile uses only 2 columns with simpler parallax.
   const yCol1 = useTransform(smooth, [0, 1], ["0%", "-40%"]);
   const yCol2 = useTransform(smooth, [0, 1], ["-40%", "10%"]);
   const yCol3 = useTransform(smooth, [0, 1], ["0%", "-40%"]);
   const yCol4 = useTransform(smooth, [0, 1], ["-30%", "20%"]);
 
+  // Mobile: only 2 columns, no duplication (fewer DOM nodes).
   const cols = useMemo(() => {
+    if (isMobile) {
+      const pick = (i: number) => images.filter((_, idx) => idx % 2 === i);
+      return [pick(0), pick(1)];
+    }
     const pick = (i: number) => images.filter((_, idx) => idx % 4 === i);
     return [
       [...pick(0), ...pick(0)],
@@ -90,26 +118,29 @@ export default function ParallaxUnfurlingGallery({
       [...pick(2), ...pick(2)],
       [...pick(3), ...pick(3)],
     ];
-  }, [images]);
+  }, [images, isMobile]);
 
+  // Mobile gets a flat2D style; desktop gets the full 3D matrix.
   const matrixStyle = reduced
     ? undefined
-    : {
-        rotateX,
-        rotateY,
-        rotateZ,
-        z: translateZ,
-        scale,
-        opacity,
-        transformStyle: "preserve-3d" as const,
-      };
+    : isMobile
+      ? { opacity: opacityM, y: ySlide }
+      : {
+          rotateX,
+          rotateY,
+          rotateZ,
+          z: translateZ,
+          scale,
+          opacity,
+          transformStyle: "preserve-3d" as const,
+        };
 
   return (
     <section
       ref={sectionRef}
       id="portfolio"
       aria-label="Our portfolio"
-      className={`relative h-[520vh] bg-charcoal text-ivory selection:bg-champagne selection:text-charcoal ${className}`}
+      className={`relative h-[200vh] md:h-[520vh] bg-charcoal text-ivory selection:bg-champagne selection:text-charcoal ${className}`}
     >
       {/* Pinned viewport that plays the unfurling as the page scrolls past */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
@@ -134,26 +165,26 @@ export default function ParallaxUnfurlingGallery({
             )}
 
             {/* Vignette shadow masking the matrix edges */}
-            <div className="pointer-events-none absolute inset-0 z-20 shadow-[inset_0_120px_150px_-60px_rgba(0,0,0,0.85),inset_0_-120px_150px_-60px_rgba(0,0,0,0.85)]" />
-            <div className="pointer-events-none absolute inset-0 z-20 shadow-[inset_140px_0_150px_-70px_rgba(0,0,0,0.85),inset_-140px_0_150px_-70px_rgba(0,0,0,0.85)]" />
+            <div className="pointer-events-none absolute inset-0 z-20 shadow-[inset_0_60px_80px_-40px_rgba(0,0,0,0.7),inset_0_-60px_80px_-40px_rgba(0,0,0,0.7)] md:shadow-[inset_0_120px_150px_-60px_rgba(0,0,0,0.85),inset_0_-120px_150px_-60px_rgba(0,0,0,0.85)]" />
+            <div className="pointer-events-none absolute inset-0 z-20 shadow-[inset_80px_0_100px_-50px_rgba(0,0,0,0.7),inset_-80px_0_100px_-50px_rgba(0,0,0,0.7)] md:shadow-[inset_140px_0_150px_-70px_rgba(0,0,0,0.85),inset_-140px_0_150px_-70px_rgba(0,0,0,0.85)]" />
 
             <div
               className="absolute inset-0 flex items-center justify-center"
-              style={{ perspective: "1200px" }}
+              style={isMobile ? undefined : { perspective: "1200px" }}
             >
               <motion.div
                 style={matrixStyle}
                 data-gallery-matrix
-                className="flex w-[130vw] items-center justify-center gap-4 md:gap-6 will-change-transform preserve-3d"
+                className={`flex items-center justify-center gap-4 md:gap-6 pointer-events-auto ${isMobile ? "w-[160vw]" : "w-[130vw] will-change-transform preserve-3d"}`}
               >
                 {cols.map((column, i) => (
                   <motion.div
                     key={`col-${i}`}
-                    style={{ y: [yCol1, yCol2, yCol3, yCol4][i] }}
-                    className="flex w-[20vw] min-w-[180px] flex-col gap-4 md:gap-6 pointer-events-auto"
+                    style={isMobile ? undefined : { y: [yCol1, yCol2, yCol3, yCol4][i] }}
+                    className="flex w-[40vw] sm:w-[30vw] md:w-[20vw] min-w-[140px] flex-col gap-4 md:gap-6"
                   >
                     {column.map((src, index) => (
-                      <ImageCard key={`col-${i}-${index}`} src={src} />
+                      <ImageCard key={`col-${i}-${index}`} src={src} isMobile={isMobile} />
                     ))}
                   </motion.div>
                 ))}
