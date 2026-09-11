@@ -1,34 +1,50 @@
 ---
-import Base from '../layouts/Base.astro';
-import Hero from '../components/Hero.astro';
-import WorkStrip from '../components/WorkStrip.astro';
-import Sessions from '../components/Sessions.astro';
-import Studio from '../components/Studio.astro';
-import Details from '../components/Details.astro';
-import Process from '../components/Process.astro';
-import Moment from '../components/Moment.astro';
-import Testimonials from '../components/Testimonials.astro';
-import Faq from '../components/Faq.astro';
-import Contact from '../components/Contact.astro';
-import { studio } from '../data/studio';
+import Layout from '@/components/Layout.astro';
+import HomeOrchestrator from '@/components/sections/HomeOrchestrator';
+import CinematicHero from '@/components/sections/CinematicHero';
+import Marquee from '@/components/sections/Marquee.astro';
+import HorizontalGallery from '@/components/sections/HorizontalGallery';
+import Services from '@/components/sections/Services';
+import Stats from '@/components/sections/Stats';
+import NewbornSpeciality from '@/components/sections/NewbornSpeciality';
+import Privacy from '@/components/sections/Privacy';
+import Testimonials from '@/components/sections/Testimonials';
+import About from '@/components/sections/About';
+import Contact from '@/components/sections/Contact';
+import Footer from '@/components/navigation/Footer.astro';
+import FilmGrain from '@/components/ui/FilmGrain.astro';
+import CustomCursor from '@/components/ui/CustomCursor';
+import ScrollProgress from '@/components/ui/ScrollProgress';
 ---
 
-<Base
-  title={`${studio.name} | Newborn and family photography in Abu Dhabi`}
-  description={studio.description}
-  overlayHeader
-  intro
->
-  <main>
-    <Hero />
-    <WorkStrip />
-    <Sessions />
-    <Studio />
-    <Details />
-    <Process />
-    <Moment />
-    <Testimonials />
-    <Faq />
-    <Contact />
+<Layout title="Abu Dhabi Newborn & Family Photography">
+  {/* Persistent overlays */}
+  <CustomCursor client:load />
+  <ScrollProgress client:load />
+  <FilmGrain />
+
+  {/* SCENE 01: Logo intro overlay + persistent header */}
+  <HomeOrchestrator client:load />
+
+  <main class="min-h-screen bg-ivory overflow-x-clip" id="main">
+    {/* SCENE 02: Cinematic hero — full-viewport auto-cycling carousel */}
+    <CinematicHero client:load />
+
+    {/* SCENE 03: Editorial marquee band */}
+    <Marquee />
+
+    {/* SCENE 04: Pinned horizontal-scroll gallery */}
+    <HorizontalGallery client:load />
+
+    {/* Editorial content sections */}
+    <Services client:load />
+    <Stats client:load />
+    <NewbornSpeciality client:load />
+    <Privacy client:load />
+    <Testimonials client:load />
+    <About client:load />
+    <Contact client:load />
+
+    <Footer />
   </main>
-</Base>
+</Layout>

@@ -1,0 +1,59 @@
+---
+import LenisProvider from '@/components/providers/LenisProvider';
+import GsapSync from '@/components/providers/GsapSync';
+
+export interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'Precious One Photography - Premium newborn, baby, maternity, and family photography studio in Abu Dhabi, UAE. Timeless memories of your most precious moments.',
+  ogImage,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!DOCTYPE html>
+<html lang="en" class="h-full antialiased">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content="newborn photography, baby photography, maternity photography, family photography, Abu Dhabi photography, UAE photographer, baby milestone, cake smash photography, pre-birthday photography" />
+
+    {/* Open Graph */}
+    <meta property="og:title" content={`${title} | Precious One Photography`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Precious One Photography" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    {/* Twitter */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | Precious One Photography`} />
+    <meta name="twitter:description" content={description} />
+
+    {/* Robots */}
+    <meta name="robots" content="index, follow" />
+
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>{title} | Precious One Photography</title>
+  </head>
+  <body class="min-h-full flex flex-col bg-ivory text-charcoal font-sans">
+    <LenisProvider client:load>
+      <slot />
+    </LenisProvider>
+    <GsapSync client:load />
+  </body>
+</html>
+
+<style is:global>
+  @import '../styles/globals.css';
+</style>

@@ -1,17 +1,30 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
 # dependencies
 /node_modules
 /.pnp
 .pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# astro build output and generated types
+# testing
+/coverage
+
+# next.js / astro build
+/.next/
+/out/
 /dist/
 /.astro/
-/.next/
+
+# production
+/build
 
 # misc
 .DS_Store
 *.pem
-*.tsbuildinfo
 
 # debug
 npm-debug.log*
@@ -19,43 +32,38 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
+# env files (can opt-in for committing if needed)
 .env*
 
-# hosting
+# vercel
 .vercel
-.netlify
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
 
 # screenshots and debug images
 screenshot-*.png
 screenshots-*/
-screenshots/
-
-# test and debug scripts
 tmp/
 test-*.mjs
 
-# media and large assets (root only)
-*.mp4
-*.webp
-assets/video_frames/
-assets/*.mp4
-assets/WhatsApp*
-
-# non-essential root assets (NOT src/assets — fonts live there)
+# non-essential source assets
 /assets/
 camera.obj
-public/models/
-
-# keep src/assets/fonts tracked (needed at build time)
 !src/assets/fonts/
 
-# AI agent configs and logs
+# media and large assets
+*.mp4
+*.webp
+public/video-frames/
+
+# AI agent configs
 .claude/
 .playwright-mcp/
 opencode.json
 AGENTS.md
 CLAUDE.md
 
-# Next.js leftovers
-next-env.d.ts
+# unused 3D model manifest
+public/models/

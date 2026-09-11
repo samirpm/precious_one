@@ -1,0 +1,66 @@
+---
+/**
+ * Marquee — a horizontally scrolling band of session types.
+ * The track renders two identical groups and animates translateX(-50%),
+ * which loops seamlessly. Mirrors the old template's "Selected Work"
+ * marquee: oversized serif words with italic-contrast alternation.
+ */
+const items: { label: string; emph?: boolean }[] = [
+  { label: 'Newborn' },
+  { label: 'Maternity', emph: true },
+  { label: 'Family' },
+  { label: 'Cake Smash', emph: true },
+  { label: 'Milestones' },
+  { label: 'Portraits', emph: true },
+];
+
+const duration = '36s';
+---
+
+<section
+  aria-label="Session types"
+  class="marquee relative overflow-hidden border-y border-white/10 bg-charcoal py-8 md:py-11"
+>
+  <div class="marquee-track flex w-max" style={`--marquee-duration: ${duration}`}>
+    <ul class="flex shrink-0 items-center">
+      {
+        items.map((item) => (
+          <li class="flex items-center">
+            <span
+              class:list={[
+                'font-serif text-4xl font-light tracking-[-0.01em] text-[#EDE8E2] md:text-6xl',
+                item.emph ? 'italic text-champagne-light' : '',
+              ]}
+            >
+              {item.emph ? <em>{item.label}</em> : item.label}
+            </span>
+            <span
+              class="mx-6 h-px w-10 bg-champagne/40 md:mx-10 md:w-16"
+              aria-hidden="true"
+            />
+          </li>
+        ))
+      }
+    </ul>
+    <ul class="flex shrink-0 items-center" aria-hidden="true">
+      {
+        items.map((item) => (
+          <li class="flex items-center">
+            <span
+              class:list={[
+                'font-serif text-4xl font-light tracking-[-0.01em] text-[#EDE8E2] md:text-6xl',
+                item.emph ? 'italic text-champagne-light' : '',
+              ]}
+            >
+              {item.emph ? <em>{item.label}</em> : item.label}
+            </span>
+            <span
+              class="mx-6 h-px w-10 bg-champagne/40 md:mx-10 md:w-16"
+              aria-hidden="true"
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
