@@ -5,6 +5,11 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    // Smooth wheel-scrolling is a desktop nicety. On touch devices native
+    // scrolling is already smooth and interruptible — Lenis would only add
+    // drag — so skip it entirely there (real phones and devtools emulation).
+    if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
+
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 

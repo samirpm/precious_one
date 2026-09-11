@@ -76,9 +76,13 @@ export default function ParallaxUnfurlingGallery({
   const isMobile = useIsMobile();
 
   // Spring config — lighter on mobile to cut per-frame cost.
+  // Desktop: progress spans the whole scroll-through. Mobile: progress maps
+  // to the pinned window only (["start start","end end"]), so the gallery
+  // animates WHILE it is pinned and doesn't finish before the pin starts —
+  // otherwise a phone user scrolls a dead, static screen.
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end end"],
+    offset: isMobile ? ["start start", "end end"] : ["start end", "end end"],
   });
 
   const smooth = useSpring(scrollYProgress, isMobile
@@ -94,9 +98,10 @@ export default function ParallaxUnfurlingGallery({
   const scale = useTransform(smooth, [0, 0.18], [1.18, 1]);
   const opacity = useTransform(smooth, [0, 0.12], [0.5, 1]);
 
-  // ── Mobile: flat2D scroll — just opacity + simple Y slide ──
-  const opacityM = useTransform(smooth, [0, 0.2], [0.4, 1]);
-  const ySlide = useTransform(smooth, [0, 1], ["8%", "-8%"]);
+  // ── Mobile: flat2D scroll — visible drift + fade while pinned ──
+  const opacityM = useTransform(smooth, [0, 0.3], [0.3, 1]);
+  const ySlide = useTransform(smooth, [0, 1], ["14%", "-14%"]);
+  const scaleM = useTransform(smooth, [0, 1], [1.1, 0.98]);
 
   // Column parallax — each track drifts at its own rate while scrolling.
   // Mobile uses only 2 columns with simpler parallax.
@@ -124,7 +129,7 @@ export default function ParallaxUnfurlingGallery({
   const matrixStyle = reduced
     ? undefined
     : isMobile
-      ? { opacity: opacityM, y: ySlide }
+      ? { opacity: opacityM, y: ySlide, scale: scaleM }
       : {
           rotateX,
           rotateY,
@@ -140,7 +145,7 @@ export default function ParallaxUnfurlingGallery({
       ref={sectionRef}
       id="portfolio"
       aria-label="Our portfolio"
-      className={`relative h-[200vh] md:h-[520vh] bg-charcoal text-ivory selection:bg-champagne selection:text-charcoal ${className}`}
+      className={`relative h-[150vh] md:h-[520vh] bg-charcoal text-ivory selection:bg-champagne selection:text-charcoal ${className}`}
     >
       {/* Pinned viewport that plays the unfurling as the page scrolls past */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
