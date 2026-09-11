@@ -254,7 +254,7 @@ export default function Services() {
         style={{ transform: 'scaleX(0)' }}
       />
 
-      <div className="mx-auto max-w-[1440px] px-6 pt-20 sm:px-8 md:px-10 md:pt-28 lg:px-16 lg:pt-36">
+      <div className="mx-auto max-w-[1440px] px-6 py-20 sm:px-8 md:px-10 md:pt-28 lg:px-16 lg:pt-36">
         {/* ── Header ───────────────────────────────── */}
         <div ref={headerRef} className="mb-12 max-w-2xl md:mb-20">
           <div className="mb-6 flex items-center gap-4">
