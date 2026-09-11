@@ -1,0 +1,97 @@
+---
+import { Picture } from 'astro:assets';
+import { photoById } from '../data/photos';
+import { whatsappLink } from '../data/studio';
+import WhatsAppIcon from './icons/WhatsAppIcon.astro';
+import Words from './Words.astro';
+
+const photo = photoById('twins');
+---
+
+<!-- A full-width photograph with one sentence, and a way in. -->
+<section class="moment" aria-labelledby="moment-title">
+  <div class="moment-media frame" aria-hidden="true">
+    <div class="moment-parallax">
+      <Picture
+        src={photo.src}
+        alt=""
+        widths={[640, 1024, 1440, Math.min(photo.src.width, 1600)]}
+        sizes="100vw"
+        formats={['avif', 'webp']}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  </div>
+  <div class="moment-panel reveal">
+    <p id="moment-title" class="display title-md words words-reveal"><Words text="“A comfortable family makes beautiful photographs.”" /></p>
+    <p class="moment-text">
+      One family at a time, at your baby’s pace, in a warm and private studio. That is the whole method.
+    </p>
+    <a class="btn btn-primary" href={whatsappLink('Hello Precious One, I would like to plan a session.')} target="_blank" rel="noopener">
+      <WhatsAppIcon />
+      Plan your session
+    </a>
+  </div>
+</section>
+
+<style>
+  .moment {
+    --gutter: clamp(1.25rem, 5vw, 4.5rem);
+    position: relative;
+    background: var(--color-ink);
+    color: var(--color-ivory);
+  }
+
+  .moment-media {
+    height: 62svh;
+    min-height: 20rem;
+  }
+
+  .moment-parallax {
+    position: absolute;
+    inset: -12% 0;
+  }
+
+  .moment-panel {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+    padding: 2.25rem var(--gutter) 2.75rem;
+  }
+
+  .moment-panel .display {
+    max-width: 16em;
+    font-style: italic;
+  }
+
+  .moment-text {
+    max-width: 40ch;
+    color: color-mix(in srgb, var(--color-ivory) 74%, transparent);
+  }
+
+  @media (min-width: 1024px) {
+    .moment {
+      height: 88svh;
+      min-height: 38rem;
+      max-height: 60rem;
+      overflow: hidden;
+    }
+
+    .moment-media {
+      position: absolute;
+      inset: 0;
+      height: auto;
+    }
+
+    .moment-panel {
+      position: absolute;
+      right: var(--gutter);
+      bottom: 0;
+      width: min(36rem, 42vw);
+      padding: 2.75rem 2.75rem 3rem;
+      background: var(--color-ink);
+    }
+  }
+
+</style>

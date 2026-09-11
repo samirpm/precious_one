@@ -1,0 +1,125 @@
+---
+import { steps, whatsappLink } from '../data/studio';
+import WhatsAppIcon from './icons/WhatsAppIcon.astro';
+import Words from './Words.astro';
+---
+
+<section id="how" class="section process" aria-labelledby="how-title">
+  <div class="wrap">
+    <div class="process-head">
+      <h2 id="how-title" class="display title-lg words words-reveal"><Words text="How a session comes together" /></h2>
+      <a
+        class="btn btn-ink reveal"
+        style="--d: 0.1s"
+        href={whatsappLink('Hello Precious One, I would like to plan a session.')}
+        target="_blank"
+        rel="noopener"
+      >
+        <WhatsAppIcon />
+        Start on WhatsApp
+      </a>
+    </div>
+
+    <ol class="steps">
+      <span class="steps-line" aria-hidden="true"></span>
+      {steps.map((step, i) => (
+        <li class="step reveal" style={`--d: ${0.1 + i * 0.12}s`}>
+          <span class="step-number display" aria-hidden="true">{i + 1}</span>
+          <h3 class="title-sm">{step.title}</h3>
+          <p class="prose-soft">{step.body}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .process-head h2 {
+    max-width: 9em;
+  }
+
+  .steps {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2rem;
+    counter-reset: step;
+  }
+
+  .steps-line {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--color-sand);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  @media (min-width: 768px) {
+    :global(html.motion) .steps-line {
+      display: block;
+    }
+    :global(html.motion) .step::before {
+      display: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(1.5rem, 4vw, 4rem);
+    }
+  }
+
+  .step {
+    position: relative;
+    display: grid;
+    gap: 0.75rem;
+    padding-top: 1.25rem;
+    align-content: start;
+  }
+
+  /* The rule above each step draws itself in as the step appears. */
+  .step::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: color-mix(in srgb, var(--color-ink) 15%, transparent);
+    transform-origin: left;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .step::before {
+      transform: scaleX(0);
+      transition: transform 1.1s var(--ease-in-out-soft) var(--d, 0s);
+    }
+    :global(html.js) .step.is-in::before {
+      transform: none;
+    }
+  }
+
+  .step-number {
+    font-size: 3rem;
+    color: var(--color-clay);
+    line-height: 0.9;
+  }
+
+  .step h3 {
+    max-width: 18ch;
+  }
+</style>

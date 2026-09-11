@@ -1,0 +1,107 @@
+---
+import { services } from '../data/studio';
+---
+
+<!--
+  A slow band of session names between the hero and the work. Two identical
+  groups slide left by half the track width, which loops without a seam.
+  Each name links to its session page.
+-->
+<section class="marquee" aria-label="Session types">
+  <div class="marquee-track">
+    {[0, 1].map((copy) => (
+      <ul class="marquee-group" aria-hidden={copy === 1 ? 'true' : undefined}>
+        {services.map((service, i) => (
+          <li>
+            <a href={`/services/${service.id}/`} class:list={{ 'is-em': i % 2 === 1 }} tabindex={copy === 1 ? -1 : undefined}>
+              {service.name}
+            </a>
+            <span class="marquee-dash" aria-hidden="true"></span>
+          </li>
+        ))}
+      </ul>
+    ))}
+  </div>
+</section>
+
+<style>
+  .marquee {
+    background: var(--color-ink);
+    color: var(--color-ivory);
+    overflow: hidden;
+    padding-block: clamp(1.5rem, 3vw, 2.5rem);
+    border-block: 1px solid color-mix(in srgb, var(--color-ivory) 10%, transparent);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+  }
+
+  .marquee-group {
+    display: flex;
+    align-items: center;
+    flex: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .marquee-group li {
+    display: flex;
+    align-items: center;
+  }
+
+  .marquee a {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(2rem, 4.5vw, 3.75rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .marquee a.is-em {
+    font-style: italic;
+    color: var(--color-sand);
+  }
+
+  .marquee a:hover {
+    color: var(--color-sand-deep);
+  }
+
+  .marquee-dash {
+    width: clamp(2rem, 4vw, 4rem);
+    height: 1px;
+    margin-inline: clamp(1.25rem, 3vw, 2.5rem);
+    background: color-mix(in srgb, var(--color-sand) 40%, transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .marquee-track {
+      animation: marquee 46s linear infinite;
+    }
+    .marquee:hover .marquee-track {
+      animation-play-state: paused;
+    }
+  }
+
+  :global(html.motion) .marquee-track {
+    animation: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      overflow-x: auto;
+    }
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

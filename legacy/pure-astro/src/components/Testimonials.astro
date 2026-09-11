@@ -1,0 +1,212 @@
+---
+import { Picture } from 'astro:assets';
+import { photoById } from '../data/photos';
+import { testimonials } from '../data/studio';
+import Words from './Words.astro';
+
+const quotes = testimonials.map((t) => ({ ...t, photo: photoById(t.photo) }));
+// On large screens the cards sit on a 3D ring that turns as you scroll. A ring
+// wants six faces, so the three quotes appear twice; the copies are hidden
+// from assistive technology and from every other layout.
+const faces = [...quotes, ...quotes].map((q, i) => ({ ...q, i, copy: i >= quotes.length }));
+---
+
+<!--
+  Each family's words sit under a photograph from their own session. Phones
+  get a swipe strip, tablets a grid, and large screens a pinned 3D ring that
+  rotates with the scroll (pure CSS scroll-driven animation).
+-->
+<section class="section kind" aria-labelledby="kind-title">
+  <div class="kind-pin">
+    <div class="kind-stage">
+      <div class="wrap kind-wrap">
+        <h2 id="kind-title" class="display title-lg words words-reveal"><Words text="Kind words from families" /></h2>
+        <div class="kind-scene">
+          <ul class="quotes no-scrollbar">
+            {faces.map((t) => (
+              <li class:list={['quote', { 'is-copy': t.copy }]} style={`--i: ${t.i}`} aria-hidden={t.copy ? 'true' : undefined}>
+                <div class="frame frame-drift quote-frame reveal-clip" style={`--d: ${(t.i % 3) * 0.12}s`}>
+                  <Picture
+                    src={t.photo.src}
+                    alt={t.copy ? '' : t.photo.alt}
+                    widths={[400, 640, 900]}
+                    sizes="(min-width: 768px) 30vw, 84vw"
+                    formats={['avif', 'webp']}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <blockquote class="reveal" style={`--d: ${0.15 + (t.i % 3) * 0.12}s`}>
+                  <p class="quote-text">“{t.quote}”</p>
+                  <footer>
+                    <cite class="quote-name">{t.name}</cite>
+                    <span class="meta">{t.detail}</span>
+                  </footer>
+                </blockquote>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <p class="meta kind-hint" aria-hidden="true">Keep scrolling</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .kind {
+    background: var(--color-blush);
+    --cover: var(--color-blush);
+  }
+
+  .kind h2 {
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+    max-width: 8em;
+  }
+
+  .kind-hint {
+    display: none;
+  }
+
+  .quotes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(-1 * clamp(1.25rem, 5vw, 4.5rem));
+    padding-inline: clamp(1.25rem, 5vw, 4.5rem);
+    scroll-padding-inline: clamp(1.25rem, 5vw, 4.5rem);
+  }
+
+  .quote {
+    flex: 0 0 84vw;
+    max-width: 30rem;
+    scroll-snap-align: start;
+  }
+
+  .quote.is-copy {
+    display: none;
+  }
+
+  .quote-frame {
+    aspect-ratio: 5 / 4;
+    margin-bottom: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .quotes {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(1.5rem, 4vw, 4rem);
+      overflow: visible;
+      margin-inline: 0;
+      padding-inline: 0;
+      align-items: start;
+    }
+    .quote {
+      max-width: none;
+    }
+    /* The middle column sits lower, like prints laid out on a table. */
+    .quote:nth-child(2) {
+      margin-top: 3.5rem;
+    }
+  }
+
+  blockquote {
+    margin: 0;
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+  }
+
+  .quote-text {
+    font-family: var(--font-display);
+    font-size: clamp(1.375rem, 1.8vw, 1.75rem);
+    line-height: 1.3;
+    text-wrap: pretty;
+  }
+
+  blockquote footer {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .quote-name {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+
+  /* The ring: ScrollTrigger pins the section and turns the cards past.
+     Every screen size; the layouts above remain for reduced motion. */
+  :global(html.motion) .kind {
+    padding-block: 0;
+  }
+
+  :global(html.motion) .kind-stage {
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  :global(html.motion) .kind-wrap {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100%;
+    padding-top: clamp(5.5rem, 10vh, 7rem);
+    padding-bottom: 2rem;
+  }
+
+  :global(html.motion) .kind h2 {
+    margin-bottom: 0;
+  }
+
+  :global(html.motion) .kind-hint {
+    display: block;
+  }
+
+  :global(html.motion) .kind-scene {
+    --card: min(21rem, 64vw);
+    --r: min(24rem, 60vw);
+    position: relative;
+    min-height: min(30rem, 58svh);
+    perspective: 1500px;
+    perspective-origin: 50% 45%;
+  }
+
+  :global(html.motion) .quotes {
+    position: absolute;
+    inset: 0;
+    display: block;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  :global(html.motion) .quote,
+  :global(html.motion) .quote.is-copy,
+  :global(html.motion) .quote:nth-child(2) {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--card);
+    max-width: none;
+    margin: 0;
+    transform: translate(-50%, -50%) rotateY(calc(var(--i) * 60deg)) translateZ(var(--r));
+    backface-visibility: hidden;
+  }
+
+  :global(html.motion) .quote-frame {
+    aspect-ratio: 5 / 4;
+    margin-bottom: 0.9rem;
+  }
+
+  :global(html.motion) .quote-text {
+    font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+  }
+</style>
