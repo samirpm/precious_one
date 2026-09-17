@@ -229,6 +229,27 @@ body {
   }
 }
 
+/* Vertical marquee — mobile portfolio auto-scroll (GPU-composited) */
+@keyframes scrollUp {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes scrollDown {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
+
+.marquee-v {
+  animation: scrollUp var(--marquee-v-duration, 25s) linear infinite;
+  will-change: transform;
+}
+
+.marquee-v-reverse {
+  animation: scrollDown var(--marquee-v-duration, 32s) linear infinite;
+  will-change: transform;
+}
+
 /* Custom utilities */
 .font-serif {
   font-family: var(--font-serif);

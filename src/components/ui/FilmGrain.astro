@@ -8,8 +8,9 @@
 
 <script>
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const mql = window.matchMedia('(max-width: 767px)');
   const el = document.getElementById('film-grain');
-  if (mq.matches) el?.remove();
+  if (mq.matches || mql.matches) el?.remove();
 </script>
 
 <div
