@@ -60,6 +60,8 @@ function MobileAutoScrollGallery({
   images: string[];
   overlay?: string;
 }) {
+  const reduced = useReducedMotion();
+
   /* Duplicate the image list so the CSS translateY(-50%) loop is seamless. */
   const doubled = useMemo(() => [...images, ...images], [images]);
 
@@ -67,7 +69,7 @@ function MobileAutoScrollGallery({
     <section
       id="portfolio"
       aria-label="Our portfolio"
-      className="relative h-[65vh] overflow-hidden bg-charcoal text-ivory selection:bg-champagne selection:text-charcoal"
+      className="relative h-screen supports-[height:100dvh]:h-dvh overflow-hidden bg-charcoal text-ivory selection:bg-champagne selection:text-charcoal"
     >
       {/* Small-screen eyebrow overlay */}
       {overlay && (
@@ -83,8 +85,19 @@ function MobileAutoScrollGallery({
       <div className="pointer-events-none absolute inset-0 z-20 shadow-[inset_0_40px_60px_-30px_rgba(0,0,0,0.7),inset_0_-40px_60px_-30px_rgba(0,0,0,0.7)]" />
       <div className="pointer-events-none absolute inset-0 z-20 shadow-[inset_50px_0_80px_-30px_rgba(0,0,0,0.7),inset_-50px_0_80px_-30px_rgba(0,0,0,0.7)]" />
 
-      {/* Two auto-scrolling columns — CSS marquee, GPU-composited */}
-      <div className="flex h-full gap-4 px-4 pt-[8vh]">
+      {/* Two auto-scrolling columns — CSS marquee, GPU-composited.
+          Wrapper performs a one-shot tilt-in when the section enters view. */}
+      <motion.div
+        className="flex h-full gap-4 px-4 pt-[8vh]"
+        initial={
+          reduced
+            ? { opacity: 0 }
+            : { opacity: 0, y: 28, rotateX: 10, transformPerspective: 1000 }
+        }
+        whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+      >
         {/* Column 1: scrolls upward */}
         <div className="flex-1 overflow-hidden">
           <div
@@ -128,7 +141,7 @@ function MobileAutoScrollGallery({
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

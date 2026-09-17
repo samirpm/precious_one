@@ -9,8 +9,9 @@ gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Services — single section with layered animations.
- * Header reveals with staggered entrance → cards wipe in via clip-path →
- * content slides up → 3D tilt on hover → parallax on scroll.
+ * Header reveals with staggered entrance → cards wipe in via clip-path
+ * (desktop) or fade+settle (mobile, GPU-composited) → content slides up →
+ * 3D tilt on hover → parallax on scroll (desktop only).
  */
 export default function Services() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -89,12 +90,12 @@ export default function Services() {
     if (!section) return;
 
     // ── Header animations ──────────────────────────
-    // Decorative line extends from 0 to full width
+    // Decorative line extends — scaleX (GPU-composited) instead of width (layout thrash)
     if (lineRef.current) {
       gsap.fromTo(lineRef.current,
-        { width: 0 },
+        { scaleX: 0 },
         {
-          width: 40,
+          scaleX: 1,
           duration: 0.8,
           ease: 'power2.inOut',
           scrollTrigger: {
@@ -156,25 +157,41 @@ export default function Services() {
       const badge = badgesRef.current[i];
       const dir = cardDirections[i % cardDirections.length];
 
-      // Clip-path direction for image reveal
-      const clipFrom = dir === 'left'
-        ? 'inset(0 100% 0 0 round 0px)'
-        : 'inset(0 0 0 100% round 0px)';
-      const clipTo = 'inset(0 0% 0 0% round 0px)';
-
-      // Image clip-path wipe
+      // Image reveal — clip-path wipe on desktop only. Animating clip-path
+      // repaints the large image every frame, which tanks fps on phones —
+      // mobile gets a GPU-composited fade + settle instead.
       if (imgWrap) {
-        gsap.set(imgWrap, { clipPath: clipFrom });
-        gsap.to(imgWrap, {
-          clipPath: clipTo,
-          duration: 1.0,
-          ease: 'power3.inOut',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 82%',
-            toggleActions: 'play none none none',
-          },
-        });
+        if (isMobile) {
+          gsap.fromTo(imgWrap,
+            { opacity: 0, scale: 1.12 },
+            {
+              opacity: 1,
+              scale: 1,
+              duration: 1.0,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 82%',
+                toggleActions: 'play none none none',
+              },
+            });
+        } else {
+          const clipFrom = dir === 'left'
+            ? 'inset(0 100% 0 0 round 0px)'
+            : 'inset(0 0 0 100% round 0px)';
+
+          gsap.set(imgWrap, { clipPath: clipFrom });
+          gsap.to(imgWrap, {
+            clipPath: 'inset(0 0% 0 0% round 0px)',
+            duration: 1.0,
+            ease: 'power3.inOut',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 82%',
+              toggleActions: 'play none none none',
+            },
+          });
+        }
       }
 
       // Parallax float on card image — desktop-only to keep mobile at 60fps
@@ -267,8 +284,8 @@ export default function Services() {
           <div className="mb-6 flex items-center gap-4">
             <span
               ref={lineRef}
-              className="h-px bg-champagne"
-              style={{ width: 0 }}
+              className="h-px w-10 origin-left bg-champagne"
+              style={{ transform: 'scaleX(0)' }}
             />
             <span
               ref={labelRef}
@@ -310,7 +327,7 @@ export default function Services() {
                 ref={(el) => { if (el) cardImagesRef.current[index] = el; }}
                 className="absolute inset-0"
               >
-                <img src={service.imageUrl} alt={service.title} className="object-cover transition-transform duration-[1.4s] ease-out group-hover:scale-[1.05] w-full h-full" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" draggable={false} />
+                <img src={service.imageUrl} alt={service.title} loading="lazy" className="object-cover transition-transform duration-[1.4s] ease-out group-hover:scale-[1.05] w-full h-full" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" draggable={false} />
               </div>
 
               {/* Gradient overlay */}
