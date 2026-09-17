@@ -380,7 +380,7 @@ export default function Testimonials() {
                 {/* Portrait */}
                 <div className={`relative overflow-hidden ${mobileLayout ? 'h-full' : 'h-[54%]'}`}>
                   {mobileLayout && <div className="absolute inset-0 bg-[#16130F]" />}
-                  <img src={t.image} alt={t.alt} className="object-cover w-full h-full" sizes="(max-width: 768px) 50vw, 300px" draggable={false} />
+                  <img src={t.image} alt={t.alt} loading="lazy" decoding="async" className="object-cover w-full h-full" sizes="(max-width: 768px) 50vw, 300px" draggable={false} />
                   {!mobileLayout && (
                     <div className="absolute inset-0 bg-gradient-to-t from-[#16130F] via-transparent to-transparent" />
                   )}

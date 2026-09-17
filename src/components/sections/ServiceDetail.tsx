@@ -28,9 +28,13 @@ export default function ServiceDetail({ service }: ServiceDetailProps) {
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReducedMotion) return;
 
-      // Parallax on hero image
+      // Scrub parallax costs a main-thread update every scroll frame — skip on
+      // mobile/touch to keep scrolling smooth (same policy as Services).
+      const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+      // Parallax on hero image (desktop only)
       const heroImg = document.querySelector('.service-hero-img');
-      if (heroImg) {
+      if (heroImg && !isMobile) {
         gsap.to(heroImg, {
           y: '12%',
           ease: 'none',
@@ -292,6 +296,8 @@ export default function ServiceDetail({ service }: ServiceDetailProps) {
                 <img
                   src={src}
                   alt={`${service.title} sample ${i + 1}`}
+                  loading="lazy"
+                  decoding="async"
                   sizes={isLarge ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 768px) 50vw, 25vw'}
                   className="object-cover transition-transform duration-[1.4s] ease-out hover:scale-[1.05] w-full h-full"
                   draggable={false}
@@ -415,7 +421,7 @@ export default function ServiceDetail({ service }: ServiceDetailProps) {
                 className="group relative block aspect-[4/5] overflow-hidden rounded-sm bg-charcoal"
                 data-cursor="view"
               >
-                <img src={s.imageUrl} alt={s.title} className="object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.06] w-full h-full" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" draggable={false} />
+                <img src={s.imageUrl} alt={s.title} loading="lazy" decoding="async" className="object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.06] w-full h-full" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" draggable={false} />
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/15 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 flex items-center justify-between p-6">
                   <span className="font-serif text-2xl font-light text-white">{s.shortTitle}</span>

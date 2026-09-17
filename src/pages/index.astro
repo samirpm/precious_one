@@ -36,14 +36,15 @@ import ScrollProgress from '@/components/ui/ScrollProgress';
     {/* SCENE 04: 3D parallax unfurling portfolio — text left, animation right */}
     <Portfolio3D client:load />
 
-    {/* Editorial content sections */}
-    <Services client:load />
-    <Stats client:load />
-    <NewbornSpeciality client:load />
-    <Privacy client:load />
-    <Testimonials client:load />
-    <About client:load />
-    <Contact client:load />
+    {/* Editorial content sections — hydrated only when scrolled into view
+        so mobile doesn't download + run every island's JS up front */}
+    <Services client:visible />
+    <Stats client:visible />
+    <NewbornSpeciality client:visible />
+    <Privacy client:visible />
+    <Testimonials client:visible />
+    <About client:visible />
+    <Contact client:visible />
 
     <Footer />
   </main>

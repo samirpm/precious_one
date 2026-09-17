@@ -42,6 +42,29 @@ export default function RevealImage({
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReducedMotion) return;
 
+      // Clip-path repaints the image every frame — on mobile use a
+      // GPU-composited fade + settle instead to keep scrolling smooth.
+      const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+      if (isMobile) {
+        gsap.fromTo(
+          imageWrap,
+          { opacity: 0, scale: 1.06 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 1.0,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: container,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          },
+        );
+        return;
+      }
+
       const clipFrom =
         direction === 'center'
           ? 'inset(50% 50% 50% 50% round 0px)'
@@ -92,6 +115,8 @@ export default function RevealImage({
         <img
           src={src}
           alt={alt}
+          loading="lazy"
+          decoding="async"
           sizes={sizes || '(max-width: 1024px) 100vw, 50vw'}
           className={`object-cover w-full h-full ${imageClassName}`}
         />
