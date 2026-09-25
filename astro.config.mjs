@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import vercel from '@astrojs/vercel';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -11,6 +12,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // https://astro.build/config
 export default defineConfig({
   site: 'https://preciousonephotography.com',
+  output: 'server',
+  adapter: vercel(),
   integrations: [
     react(),
     sitemap(),

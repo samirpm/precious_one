@@ -1,0 +1,219 @@
+// Precious One Photography — Prisma schema
+// PostgreSQL + Prisma migration from Supabase.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Admin (replaces Supabase Auth)
+// ─────────────────────────────────────────────────────────────
+
+model Admin {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("admins")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Banners — hero carousel (min 3 / max 5 enforced server-side)
+// ─────────────────────────────────────────────────────────────
+
+model Banner {
+  id           String   @id @default(uuid()) @db.Uuid
+  title        String
+  subtitle     String?
+  imageUrl     String   @map("image_url")
+  buttonText   String?  @map("button_text")
+  buttonUrl    String?  @map("button_url")
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([displayOrder])
+  @@index([isActive])
+  @@map("banners")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Portfolio images (min 10 / max 30 enforced server-side)
+// ─────────────────────────────────────────────────────────────
+
+model PortfolioImage {
+  id           String   @id @default(uuid()) @db.Uuid
+  title        String
+  description  String?
+  imageUrl     String   @map("image_url")
+  displayOrder Int      @default(0) @map("display_order")
+  featured     Boolean  @default(false)
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([displayOrder])
+  @@index([isActive])
+  @@map("portfolio_images")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Testimonials
+// ─────────────────────────────────────────────────────────────
+
+model Testimonial {
+  id           String   @id @default(uuid()) @db.Uuid
+  quote        String
+  name         String
+  role         String   @default("")
+  imageUrl     String?  @map("image_url")
+  altText      String   @default("") @map("alt_text")
+  rating       Int      @default(5)
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([displayOrder])
+  @@index([isActive])
+  @@map("testimonials")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Services (public site pages)
+// ─────────────────────────────────────────────────────────────
+
+model Service {
+  id              String   @id @default(uuid()) @db.Uuid
+  slug            String   @unique
+  title           String
+  shortTitle      String   @default("") @map("short_title")
+  description     String   @default("")
+  imageUrl        String   @default("") @map("image_url")
+  gallery         String[]
+  longDescription String   @default("") @map("long_description")
+  idealFor        String   @default("") @map("ideal_for")
+  sortOrder       Int      @default(0) @map("sort_order")
+  published       Boolean  @default(true)
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  packages Package[]
+  bookings Booking[]
+
+  @@index([sortOrder])
+  @@index([published])
+  @@map("services")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Packages — previously JSONB inside services; now relational
+// ─────────────────────────────────────────────────────────────
+
+model Package {
+  id           String   @id @default(uuid()) @db.Uuid
+  serviceId    String   @map("service_id") @db.Uuid
+  name         String
+  slug         String
+  description  String?
+  price        Decimal  @db.Decimal(10, 2)
+  currency     String   @default("AED")
+  note         String?
+  popular      Boolean  @default(false)
+  imageUrl     String?  @map("image_url")
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  service Service         @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  details PackageDetail[]
+
+  @@unique([serviceId, slug])
+  @@index([serviceId])
+  @@index([displayOrder])
+  @@index([isActive])
+  @@map("packages")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Package details (features listed under a package)
+// ─────────────────────────────────────────────────────────────
+
+model PackageDetail {
+  id           String   @id @default(uuid()) @db.Uuid
+  packageId    String   @map("package_id") @db.Uuid
+  title        String
+  description  String?
+  displayOrder Int      @default(0) @map("display_order")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  @@index([packageId])
+  @@index([displayOrder])
+  @@map("package_details")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Bookings — session lead management
+// ─────────────────────────────────────────────────────────────
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model Booking {
+  id           String        @id @default(uuid()) @db.Uuid
+  clientName   String         @map("client_name")
+  clientEmail  String         @map("client_email")
+  clientPhone   String         @map("client_phone")
+  serviceId    String        @map("service_id") @db.Uuid
+  bookingDate  DateTime      @map("booking_date") @db.Timestamptz(3)
+  bookingTime  String        @map("booking_time")
+  message      String?
+  status       BookingStatus @default(PENDING)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([bookingDate])
+  @@map("bookings")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Studio info (single row, id = 1)
+// ─────────────────────────────────────────────────────────────
+
+model StudioInfo {
+  id            Int      @id @default(1)
+  name          String   @default("Precious One Photography")
+  tagline       String   @default("")
+  description   String   @default("")
+  speciality    String   @default("")
+  privacy       String   @default("")
+  phone         String   @default("")
+  whatsapp      String   @default("")
+  email         String   @default("")
+  address       String   @default("")
+  openingHours  String   @default("") @map("opening_hours")
+  instagram     String   @default("")
+  bookingMethod String   @default("whatsapp") @map("booking_method")
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("studio_info")
+}

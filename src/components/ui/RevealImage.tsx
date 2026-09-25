@@ -57,7 +57,7 @@ export default function RevealImage({
             ease: 'power3.out',
             scrollTrigger: {
               trigger: container,
-              start: 'top 80%',
+              start: 'top 85%',
               toggleActions: 'play none none none',
             },
           },
@@ -76,14 +76,15 @@ export default function RevealImage({
 
       gsap.fromTo(
         imageWrap,
-        { clipPath: clipFrom },
+        { clipPath: clipFrom, opacity: 0 },
         {
           clipPath: clipTo,
-          duration: 1.2,
-          ease: 'power3.inOut',
+          opacity: 1,
+          duration: 0.8,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: container,
-            start: 'top 80%',
+            start: 'top 85%',
             toggleActions: 'play none none none',
           },
         },

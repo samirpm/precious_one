@@ -1,0 +1,81 @@
+---
+import AdminShell from '@/components/admin/AdminShell.astro';
+import { requireAdmin } from '@/lib/admin-api';
+import { getAdminBookings } from '@/lib/services/booking.service';
+
+const bookings = await getAdminBookings();
+---
+
+<AdminShell title="Bookings" active="bookings">
+  <div class="space-y-6">
+    <div class="flex items-center justify-between">
+      <h1 class="font-serif text-2xl font-light">Session Bookings</h1>
+      <p class="text-xs text-taupe uppercase tracking-wider">{bookings.length} Requests</p>
+    </div>
+
+    <div class="overflow-x-auto rounded border border-charcoal/10 bg-white">
+      <table class="w-full text-left text-sm">
+        <thead class="border-b border-charcoal/10 bg-charcoal/5 text-taupe uppercase tracking-wider">
+          <tr>
+            <th class="px-6 py-3 font-medium">Client</th>
+            <th class="px-6 py-3 font-medium">Service</th>
+            <th class="px-6 py-3 font-medium">Date & Time</th>
+            <th class="px-6 py-3 font-medium">Status</th>
+            <th class="px-6 py-3 text-right font-medium">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-charcoal/10">
+          {bookings.length === 0 ? (
+            <tr>
+              <td colspan="5" class="px-6 py-10 text-center text-charcoal-light italic">
+                No booking requests found.
+              </td>
+            </tr>
+          ) : (
+            bookings.map((b) => (
+              <tr class="hover:bg-charcoal/5">
+                <td class="px-6 py-4">
+                  <p class="font-medium">{b.clientName}</p>
+                  <p class="text-xs text-taupe">{b.clientEmail} · {b.clientPhone}</p>
+                </td>
+                <td class="px-6 py-4">{b.service?.title ?? 'Unknown'}</td>
+                <td class="px-6 py-4">
+                  <p>{b.bookingDate.toLocaleDateString()}</p>
+                  <p class="text-xs text-taupe">{b.bookingTime}</p>
+                </td>
+                <td class="px-6 py-4">
+                  <span class:list={[
+                    'rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider',
+                    {
+                      'bg-green-100 text-green-700': b.status === 'CONFIRMED',
+                      'bg-yellow-100 text-yellow-700': b.status === 'PENDING',
+                      'bg-red-100 text-red-700': b.status === 'CANCELLED',
+                    }
+                  ]}>
+                    {b.status}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-right space-x-2">
+                  <form method="POST" action={`/api/admin/bookings?action=update-status&id=${b.id}`} class="inline">
+                    <select
+                      name="status"
+                      onchange="this.form.submit()"
+                      class="border border-charcoal/20 bg-transparent px-2 py-1 text-xs outline-none focus:border-champagne"
+                    >
+                      <option value="PENDING" selected={b.status === 'PENDING'}>Pending</option>
+                      <option value="CONFIRMED" selected={b.status === 'CONFIRMED'}>Confirm</option>
+                      <option value="CANCELLED" selected={b.status === 'CANCELLED'}>Cancel</option>
+                    </select>
+                  </form>
+                  <form method="POST" action={`/api/admin/bookings?action=delete&id=${b.id}`} class="inline" data-confirm>
+                    <button type="submit" class="text-xs text-red-700 hover:underline">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</AdminShell>

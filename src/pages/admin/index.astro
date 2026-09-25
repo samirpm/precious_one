@@ -1,0 +1,62 @@
+---
+import AdminShell from '@/components/admin/AdminShell.astro';
+import { prisma } from '@/lib/prisma';
+
+const [banners, portfolio, services, testimonials] = await Promise.all([
+  prisma.banner.count(),
+  prisma.portfolioImage.count(),
+  prisma.service.count(),
+  prisma.testimonial.count(),
+]);
+
+const stats = [
+  { label: 'Banners', count: `${banners} / 5`, href: '/admin/banners' },
+  { label: 'Portfolio photos', count: `${portfolio} / 30`, href: '/admin/portfolio' },
+  { label: 'Services', count: services, href: '/admin/services' },
+  { label: 'Testimonials', count: testimonials, href: '/admin/testimonials' },
+];
+
+const sections = [
+  { title: 'Banners', desc: 'Hero carousel slides — min 3, max 5', href: '/admin/banners' },
+  { title: 'Portfolio', desc: 'Photos, titles, categories, featured flags & ordering', href: '/admin/portfolio' },
+  { title: 'Services & Packages', desc: 'Services, pricing packages, galleries, ideal-for text', href: '/admin/services' },
+  { title: 'Testimonials', desc: 'Client quotes shown in the 3D ring', href: '/admin/testimonials' },
+  { title: 'Studio Info & Contact', desc: 'Phone, WhatsApp, email, address, hours, Instagram', href: '/admin/studio' },
+];
+---
+
+<AdminShell title="Dashboard" active="dashboard">
+  <header class="mb-10">
+    <h1 class="font-serif text-3xl font-light">Dashboard</h1>
+    <p class="mt-2 text-sm text-charcoal-light">Manage everything shown on the public site.</p>
+  </header>
+
+  <div class="grid gap-4 sm:grid-cols-4">
+    {stats.map((s) => (
+      <a
+        href={s.href}
+        class="group border border-charcoal/10 bg-white p-6 transition-colors hover:border-champagne"
+      >
+        <p class="font-serif text-4xl font-light text-charcoal">{s.count}</p>
+        <p class="mt-2 font-sans text-[9px] uppercase tracking-[0.25em] text-taupe group-hover:text-champagne-dark">
+          {s.label}
+        </p>
+  </a>
+    ))}
+  </div>
+
+  <div class="mt-10 grid gap-4 sm:grid-cols-2">
+    {sections.map((sec) => (
+      <a
+        href={sec.href}
+        class="group border border-charcoal/10 bg-white p-6 transition-colors hover:border-champagne"
+      >
+        <h2 class="font-serif text-xl font-light">{sec.title}</h2>
+        <p class="mt-2 text-sm text-charcoal-light">{sec.desc}</p>
+        <p class="mt-4 font-sans text-[9px] uppercase tracking-[0.25em] text-champagne-dark opacity-0 transition-opacity group-hover:opacity-100">
+          Manage →
+        </p>
+      </a>
+    ))}
+  </div>
+</AdminShell>

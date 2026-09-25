@@ -266,11 +266,17 @@ body {
   background-clip: text;
 }
 
-/* Glass effect */
 .glass {
   background: rgba(247, 244, 239, 0.8);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  transform: translateZ(0);
+}
+
+/* Section containment for performance */
+.section-contain {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
 }
 
 /* Smooth image loading */

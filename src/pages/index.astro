@@ -15,6 +15,18 @@ import Footer from '@/components/navigation/Footer.astro';
 import FilmGrain from '@/components/ui/FilmGrain.astro';
 import CustomCursor from '@/components/ui/CustomCursor';
 import ScrollProgress from '@/components/ui/ScrollProgress';
+import { getServices, getPortfolio, getTestimonials, getStudioInfo, getBanners } from '@/lib/data';
+
+// Content comes from PostgreSQL (Prisma) at request time (edited via /admin)
+const [services, portfolio, testimonials, studioInfo, banners] = await Promise.all([
+  getServices(),
+  getPortfolio(),
+  getTestimonials(),
+  getStudioInfo().catch(() => null),
+  getBanners().catch(() => []),
+]);
+
+const galleryImages = Array.from(new Set(portfolio.map((p) => p.imageUrl))).slice(0, 15);
 ---
 
 <Layout title="Abu Dhabi Newborn & Family Photography">
@@ -27,24 +39,24 @@ import ScrollProgress from '@/components/ui/ScrollProgress';
   <HomeOrchestrator client:load />
 
   <main class="min-h-screen bg-ivory overflow-x-clip" id="main">
-    {/* SCENE 02: Cinematic hero — full-viewport auto-cycling carousel */}
-    <CinematicHero client:load />
+    {/* SCENE 02: Cinematic hero — full-viewport auto-cycling carousel (slides from Banners) */}
+    <CinematicHero client:load slides={banners} />
 
     {/* SCENE 03: Editorial marquee band */}
     <Marquee />
 
     {/* SCENE 04: 3D parallax unfurling portfolio — text left, animation right */}
-    <Portfolio3D client:load />
+    <Portfolio3D client:load images={galleryImages} />
 
     {/* Editorial content sections — hydrated only when scrolled into view
         so mobile doesn't download + run every island's JS up front */}
-    <Services client:visible />
+    <Services client:visible services={services} />
     <Stats client:visible />
     <NewbornSpeciality client:visible />
-    <Privacy client:visible />
-    <Testimonials client:visible />
-    <About client:visible />
-    <Contact client:visible />
+    <Privacy client:visible studioInfo={studioInfo} />
+    <Testimonials client:visible testimonials={testimonials} />
+    <About client:visible studioInfo={studioInfo} />
+    <Contact client:visible studioInfo={studioInfo} services={services} />
 
     <Footer />
   </main>

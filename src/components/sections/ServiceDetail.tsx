@@ -2,8 +2,8 @@ import { useRef } from 'react';
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import type { Service } from '@/types/photography';
-import { studioInfo, services } from '@/lib/content';
+import type { Service, StudioInfo } from '@/types/photography';
+import { studioInfo as fallbackStudioInfo } from '@/lib/content';
 import SplitReveal from '@/components/ui/SplitReveal';
 import RevealImage from '@/components/ui/RevealImage';
 
@@ -11,6 +11,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface ServiceDetailProps {
   service: Service;
+  studioInfo?: StudioInfo | null;
+  services?: Service[];
 }
 
 /**
@@ -18,7 +20,8 @@ interface ServiceDetailProps {
  * Hero with parallax image → story section with ideal-for sidebar →
  * full-width gallery → 3-package tier cards → explore-more grid → footer.
  */
-export default function ServiceDetail({ service }: ServiceDetailProps) {
+export default function ServiceDetail({ service, studioInfo, services = [] }: ServiceDetailProps) {
+  const info = studioInfo ?? fallbackStudioInfo;
   const packagesRef = useRef<HTMLDivElement>(null);
   const packageCards = useRef<HTMLDivElement[]>([]);
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -91,7 +94,7 @@ export default function ServiceDetail({ service }: ServiceDetailProps) {
     [],
   );
 
-  const whatsappNumber = studioInfo.whatsapp.replace(/[^0-9]/g, '');
+  const whatsappNumber = info.whatsapp.replace(/[^0-9]/g, '');
   const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
     `Hi Precious One Photography! I'd love to book the ${service.title} session.`,
   )}`;
@@ -229,7 +232,7 @@ export default function ServiceDetail({ service }: ServiceDetailProps) {
                 Studio Location
               </p>
               <p className="mt-3 font-sans text-[13px] font-light leading-5 text-charcoal-light">
-                {studioInfo.name.replace(' Photography', '')} · {studioInfo.address.split(',').slice(-2).join(',').trim()}
+                {info.name.replace(' Photography', '')} · {info.address.split(',').slice(-2).join(',').trim()}
               </p>
 
               <div className="my-6 h-px bg-champagne/25" />

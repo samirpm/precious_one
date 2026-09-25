@@ -1,0 +1,15 @@
+---
+import AdminShell from '@/components/admin/AdminShell.astro';
+import TestimonialForm from '@/components/admin/TestimonialForm.astro';
+
+const error = Astro.url.searchParams.get('error');
+---
+
+<AdminShell title="Add Testimonial" active="testimonials" error={error}>
+  <header class="mb-8">
+    <h1 class="font-serif text-3xl font-light">Add Testimonial</h1>
+    <p class="mt-2 text-sm text-charcoal-light">Testimonials appear in the 3D ring on the homepage.</p>
+  </header>
+
+  <TestimonialForm />
+</AdminShell>

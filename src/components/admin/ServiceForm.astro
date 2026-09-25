@@ -1,0 +1,125 @@
+---
+import type { Service } from '@prisma/client';
+
+interface Props {
+  service?: Service;
+}
+
+const { service } = Astro.props;
+const isEdit = Boolean(service);
+---
+
+<form
+  method="POST"
+  enctype="multipart/form-data"
+  action={service ? `/api/admin/services/${service.id}?action=update` : '/api/admin/services?action=create'}
+  id="service-form"
+  class="max-w-3xl space-y-6"
+>
+  <div class="space-y-5 border border-charcoal/10 bg-white p-6">
+    <div class="grid gap-5 sm:grid-cols-2">
+      <div>
+        <label class="mb-2 block text-xs font-medium uppercase tracking-wider text-taupe" for="title">Title</label>
+        <input id="title" name="title" type="text" required value={service?.title ?? ''}
+          class="w-full border border-charcoal/20 px-4 py-2.5 text-sm outline-none focus:border-champagne" />
+      </div>
+      <div>
+        <label class="mb-2 block text-xs font-medium uppercase tracking-wider text-taupe" for="slug">Slug (URL)</label>
+        <input id="slug" name="slug" type="text" required value={service?.slug ?? ''} placeholder="newborn"
+          class="w-full border border-charcoal/20 px-4 py-2.5 text-sm outline-none focus:border-champagne" />
+      </div>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2">
+      <div>
+        <label class="mb-2 block text-xs font-medium uppercase tracking-wider text-taupe" for="shortTitle">Short title</label>
+        <input id="shortTitle" name="shortTitle" type="text" value={service?.shortTitle ?? ''}
+          class="w-full border border-charcoal/20 px-4 py-2.5 text-sm outline-none focus:border-champagne" />
+      </div>
+      <div>
+        <label class="mb-2 block text-xs font-medium uppercase tracking-wider text-taupe" for="sortOrder">Sort order</label>
+        <input id="sortOrder" name="sortOrder" type="number" value={service?.sortOrder ?? 0}
+          class="w-full border border-charcoal/20 px-4 py-2.5 text-sm outline-none focus:border-champagne" />
+      </div>
+    </div>
+
+    <div>
+      <label class="mb-2 block text-xs font-medium uppercase tracking-wider text-taupe" for="description">Short description</label>
+      <textarea id="description" name="description" rows="2"
+        class="w-full border border-charcoal/20 px-4 py-2.5 text-sm outline-none focus:border-champagne">{service?.description ?? ''}</textarea>
+    </div>
+
+    <div>
+      <label class="mb-2 block text-xs font-medium uppercase tracking-wider text-taupe" for="longDescription">Long description</label>
+      <textarea id="longDescription" name="longDescription" rows="5"
+        class="w-full border border-charcoal/20 px-4 py-2.5 text-sm outline-none focus:border-champagne">{service?.longDescription ?? ''}</textarea>
+    </div>
+
+    <div>
+      <label class="mb-2 block text-xs font-medium uppercase tracking-wider text-taupe" for="idealFor">Ideal for</label>
+      <input id="idealFor" name="idealFor" type="text" value={service?.idealFor ?? ''}
+        class="w-full border border-charcoal/20 px-4 py-2.5 text-sm outline-none focus:border-champagne" />
+    </div>
+
+    <div>
+      <label class="mb-2 block text-xs font-medium uppercase tracking-wider text-taupe" for="imageFile">Cover image upload</label>
+      {service && service.imageUrl && <img src={service.imageUrl} alt={service.title} class="mb-3 h-32 w-32 object-cover" />}
+      <input id="imageFile" name="imageFile" type="file" accept="image/*" required
+        class="w-full border border-charcoal/20 px-4 py-2.5 text-sm outline-none focus:border-champagne" />
+      <p class="mt-2 text-xs text-charcoal-light">Select a JPEG, PNG, or WebP image (Max 5MB).</p>
+    </div>
+
+    <div class="flex items-center gap-6">
+      <label class="flex items-center gap-2 text-sm">
+        <input type="checkbox" name="published" checked={service?.published ?? true} class="h-4 w-4 accent-champagne" />
+        Published (visible on site)
+      </label>
+    </div>
+  </div>
+
+  <!-- ─── Gallery URLs (one input per image; rows can be added/removed) ─── -->
+  <div class="border border-charcoal/10 bg-white p-6">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="font-serif text-lg font-light">Gallery</h2>
+      <button type="button" id="add-gallery-row"
+        class="rounded border border-charcoal/20 px-3 py-1.5 text-xs hover:border-champagne">
+        + Add image URL
+      </button>
+    </div>
+    <p class="mb-4 text-xs text-charcoal-light">
+      Paste image URLs (e.g. /images/portfolio/photo-1.jpeg).
+    </p>
+    <div id="gallery-rows" class="space-y-2">
+      {(service?.gallery ?? []).map((url) => (
+        <input type="text" name="gallery[]" value={url}
+          class="w-full border border-charcoal/20 px-4 py-2 text-sm outline-none focus:border-champagne" />
+      ))}
+    </div>
+  </div>
+
+  <p class="max-w-3xl text-xs text-charcoal-light">
+    Packages are managed on their own page — use the “Packages” link on the Services list.
+  </p>
+
+  <div class="flex items-center gap-4">
+    <button
+      type="submit"
+      class="bg-champagne px-8 py-3 font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-white transition-colors hover:bg-champagne-light"
+    >
+      {isEdit ? 'Save Changes' : 'Add Service'}
+    </button>
+    <a href="/admin/services" class="text-sm text-charcoal-light hover:text-charcoal">Cancel</a>
+  </div>
+</form>
+
+<script>
+  // ─── Gallery rows ───
+  document.getElementById('add-gallery-row')?.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'gallery[]';
+    input.className = 'w-full border border-charcoal/20 px-4 py-2 text-sm outline-none focus:border-champagne';
+    input.placeholder = 'Image URL';
+    document.getElementById('gallery-rows')?.appendChild(input);
+  });
+</script>

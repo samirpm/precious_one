@@ -1,0 +1,130 @@
+---
+import AdminShell from '@/components/admin/AdminShell.astro';
+import { getPackagesByService } from '@/lib/services/package.service';
+import { getService } from '@/lib/services/service.service';
+import { HttpError } from '@/lib/errors';
+
+const serviceId = Astro.params.id as string;
+const error = Astro.url.searchParams.get('error');
+
+let service;
+try {
+  service = await getService(serviceId);
+} catch (error) {
+  if (error instanceof HttpError && error.status === 404) return Astro.redirect('/admin/services');
+  throw error;
+}
+const packages = await getPackagesByService(serviceId);
+---
+
+<AdminShell title={`Packages · ${service.title}`} active="services" error={error}>
+  <header class="mb-8 flex items-start justify-between gap-4">
+    <div>
+      <p class="font-sans text-[9px] uppercase tracking-[0.3em] text-taupe">
+        <a href="/admin/services" class="hover:text-charcoal">Services</a> / {service.slug}
+      </p>
+      <h1 class="mt-2 font-serif text-3xl font-light">{service.title} — Packages</h1>
+      <p class="mt-2 text-sm text-charcoal-light">Pricing blocks shown on the service page.</p>
+    </div>
+    <form method="GET" action={`/admin/services/${serviceId}/packages/new`}>
+      <a
+        href={`/admin/services/${serviceId}/packages/new`}
+        class="bg-champagne px-5 py-3 font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-white transition-colors hover:bg-champagne-light"
+      >
+        + Add Package
+      </a>
+    </form>
+  </header>
+
+  <div class="space-y-6">
+    {packages.map((pkg) => (
+      <div id={pkg.id} class="border border-charcoal/10 bg-white p-5">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="min-w-0">
+            <p class="font-serif text-lg font-light">
+              {pkg.name}
+              {pkg.popular && (
+                <span class="ml-2 rounded bg-champagne/15 px-2 py-0.5 text-[9px] uppercase tracking-wider text-champagne-dark">
+                  Most popular
+                </span>
+              )}
+            </p>
+            <p class="mt-1 text-xs text-charcoal-light">
+              {pkg.currency} {pkg.price} · /{pkg.slug} · order {pkg.displayOrder}
+              {pkg.isActive ? '' : ' · hidden'}
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <form method="POST" action={`/api/admin/packages/${pkg.id}?serviceId=${serviceId}&action=toggle`}>
+              <button
+                type="submit"
+                class:list={[
+                  'rounded px-2 py-1 text-xs',
+                  pkg.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-700',
+                ]}
+              >
+                {pkg.isActive ? 'Active' : 'Hidden'}
+              </button>
+            </form>
+            <a href={`/admin/services/${serviceId}/packages/${pkg.id}/edit`} class="rounded px-2 py-1 text-xs hover:bg-charcoal/5">
+              Edit
+            </a>
+            <form method="POST" action={`/api/admin/packages/${pkg.id}?serviceId=${serviceId}&action=delete`} data-confirm>
+              <button type="submit" class="rounded px-2 py-1 text-xs text-red-700 hover:bg-red-50">Delete</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ─── Details (features) ─── -->
+        <div class="mt-4 border-t border-charcoal/10 pt-4">
+          <p class="mb-2 text-[9px] font-medium uppercase tracking-[0.25em] text-taupe">Details</p>
+          <ol class="list-inside list-decimal space-y-1 text-sm">
+            {pkg.details.map((detail) => (
+              <li class="flex items-center justify-between gap-3">
+                <span class="min-w-0 truncate">{detail.title}</span>
+                <span class="flex shrink-0 items-center gap-1">
+                  <form method="POST" action={`/api/admin/packages/${pkg.id}/details/${detail.id}?serviceId=${serviceId}&action=update`}>
+                    <input type="hidden" name="title" value={detail.title} />
+                    <input type="hidden" name="description" value={detail.description ?? ''} />
+                    <input type="hidden" name="displayOrder" value={detail.displayOrder - 1.5} />
+                    <button type="submit" class="px-1 text-xs text-charcoal-light hover:text-charcoal" title="Move up">▲</button>
+                  </form>
+                  <form method="POST" action={`/api/admin/packages/${pkg.id}/details/${detail.id}?serviceId=${serviceId}&action=update`}>
+                    <input type="hidden" name="title" value={detail.title} />
+                    <input type="hidden" name="description" value={detail.description ?? ''} />
+                    <input type="hidden" name="displayOrder" value={detail.displayOrder + 1.5} />
+                    <button type="submit" class="px-1 text-xs text-charcoal-light hover:text-charcoal" title="Move down">▼</button>
+                  </form>
+                  <form method="POST" action={`/api/admin/packages/${pkg.id}/details/${detail.id}?serviceId=${serviceId}&action=delete`} data-confirm>
+                    <button type="submit" class="px-1 text-xs text-red-700 hover:bg-red-50" title="Delete">✕</button>
+                  </form>
+                </span>
+              </li>
+            ))}
+          </ol>
+          {pkg.details.length === 0 && (
+            <p class="text-xs text-charcoal-light">No details yet.</p>
+          )}
+
+          <form
+            method="POST"
+            action={`/api/admin/packages/${pkg.id}/details?serviceId=${serviceId}`}
+            class="mt-3 flex items-center gap-2"
+          >
+            <input type="text" name="title" required placeholder="Add a feature (e.g. 2-hour studio session)"
+              class="flex-1 border border-charcoal/20 px-3 py-1.5 text-sm outline-none focus:border-champagne" />
+            <input type="number" name="displayOrder" value={pkg.details.length + 1} class="w-16 border border-charcoal/20 px-2 py-1.5 text-sm outline-none focus:border-champagne" />
+            <button type="submit" class="rounded bg-charcoal/5 px-3 py-1.5 text-xs hover:bg-charcoal/10">Add detail</button>
+  </form>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {packages.length === 0 && (
+    <p class="border border-dashed border-charcoal/20 p-10 text-center text-sm text-charcoal-light">
+      No packages yet — add your first one.
+    </p>
+  )}
+</AdminShell>

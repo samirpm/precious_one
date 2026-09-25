@@ -1,6 +1,9 @@
 ---
-import { studioInfo, services } from '@/lib/content';
+import { getServices, getStudioInfo } from '@/lib/data';
 import MagneticButton from '@/components/ui/MagneticButton';
+
+const studioInfo = await getStudioInfo().catch(() => null);
+const services = await getServices();
 
 const explore = [
   { label: 'Portfolio', href: '/#portfolio' },

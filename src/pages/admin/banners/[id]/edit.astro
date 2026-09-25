@@ -1,0 +1,31 @@
+---
+import AdminShell from '@/components/admin/AdminShell.astro';
+import BannerForm from '@/components/admin/BannerForm.astro';
+import { getBanner } from '@/lib/services/banner.service';
+import { HttpError } from '@/lib/errors';
+
+let banner = null;
+let notFound = false;
+try {
+  banner = await getBanner(Astro.params.id as string);
+} catch (error) {
+  if (error instanceof HttpError && error.status === 404) notFound = true;
+  else throw error;
+}
+const error = Astro.url.searchParams.get('error');
+---
+
+<AdminShell title="Edit Banner" active="banners" error={error}>
+  {notFound ? (
+    <p class="border border-dashed border-charcoal/20 p-10 text-center text-sm text-charcoal-light">
+      Banner not found.
+    </p>
+  ) : (
+    <>
+      <header class="mb-8">
+        <h1 class="font-serif text-3xl font-light">Edit Banner</h1>
+      </header>
+      <BannerForm banner={banner!} />
+    </>
+  )}
+</AdminShell>

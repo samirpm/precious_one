@@ -8,40 +8,67 @@ gsap.registerPlugin(ScrollTrigger);
 /* -------------------------------------------------------------------------- */
 /*  Slide data — each slide is a hero image with a category label             */
 /* -------------------------------------------------------------------------- */
-const SLIDES = [
+const FALLBACK_SLIDES = [
   {
     src: '/images/portfolio/photo-5.jpeg',
     alt: 'Precious One Photography — newborn portrait',
-    category: 'Newborn',
+    label: 'Newborn',
+    buttonText: 'Book a Session',
+    buttonUrl: '#contact',
   },
   {
     src: '/images/portfolio/photo-1.jpeg',
     alt: 'Precious One Photography — family portrait',
-    category: 'Family',
+    label: 'Family',
+    buttonText: 'Book a Session',
+    buttonUrl: '#contact',
   },
   {
     src: '/images/portfolio/photo-3.jpeg',
     alt: 'Precious One Photography — maternity session',
-    category: 'Maternity',
+    label: 'Maternity',
+    buttonText: 'Book a Session',
+    buttonUrl: '#contact',
   },
   {
     src: '/images/portfolio/photo-7.jpeg',
     alt: 'Precious One Photography — milestone session',
-    category: 'Milestones',
+    label: 'Milestones',
+    buttonText: 'Book a Session',
+    buttonUrl: '#contact',
   },
   {
     src: '/images/portfolio/photo-10.jpeg',
     alt: 'Precious One Photography — cake smash',
-    category: 'Cake Smash',
+    label: 'Cake Smash',
+    buttonText: 'Book a Session',
+    buttonUrl: '#contact',
   },
 ] as const;
+
+export interface HeroSlide {
+  src: string;
+  alt: string;
+  label: string;
+  buttonText: string;
+  buttonUrl: string;
+}
 
 const INTERVAL = 5000; // ms between auto-cycles
 
 /* -------------------------------------------------------------------------- */
 /*  CinematicHero — full-viewport auto-cycling carousel, inspired by lieben.no */
 /* -------------------------------------------------------------------------- */
-export default function CinematicHero() {
+interface Props {
+  slides?: HeroSlide[];
+}
+
+export default function CinematicHero({ slides }: Props) {
+  // Slides come from the Banners model; fall back to the original set.
+  const SLIDES: HeroSlide[] =
+    slides && slides.length > 0
+      ? slides
+      : (FALLBACK_SLIDES as unknown as HeroSlide[]);
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -130,10 +157,10 @@ export default function CinematicHero() {
         </p>
 
         <a
-          href="#contact"
+          href={SLIDES[current].buttonUrl}
           className="pointer-events-auto mt-6 sm:mt-8 inline-block rounded-full border border-white/35 px-7 py-3 sm:px-9 sm:py-3.5 font-sans text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.22em] text-white bg-black/25 transition-all duration-300 hover:border-champagne hover:bg-champagne/25 hover:text-white md:backdrop-blur-sm"
         >
-          Book a Session
+          {SLIDES[current].buttonText}
         </a>
       </div>
 
@@ -177,7 +204,7 @@ export default function CinematicHero() {
             key={current}
             className="inline-block font-sans text-[10px] font-medium uppercase tracking-[0.4em] text-white/70 animate-[fadeIn_0.6s_ease]"
           >
-            {SLIDES[current].category}
+            {SLIDES[current].label}
           </span>
         </div>
 

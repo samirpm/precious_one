@@ -1,0 +1,27 @@
+---
+import AdminShell from '@/components/admin/AdminShell.astro';
+import PortfolioForm from '@/components/admin/PortfolioForm.astro';
+import { getPortfolioImage } from '@/lib/services/portfolio.service';
+import { HttpError } from '@/lib/errors';
+
+let photo = null;
+let notFound = false;
+try {
+  photo = await getPortfolioImage(Astro.params.id as string);
+} catch (error) {
+  if (error instanceof HttpError && error.status === 404) notFound = true;
+  else throw error;
+}
+
+if (notFound) return Astro.redirect('/admin/portfolio');
+const error = Astro.url.searchParams.get('error');
+---
+
+<AdminShell title="Edit Photo" active="portfolio" error={error}>
+  <header class="mb-8">
+    <h1 class="font-serif text-3xl font-light">Edit Photo</h1>
+    <p class="mt-2 text-sm text-charcoal-light">{photo!.title}</p>
+  </header>
+
+  <PortfolioForm photo={photo!} />
+</AdminShell>

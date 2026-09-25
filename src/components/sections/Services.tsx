@@ -2,10 +2,14 @@ import { useRef, useCallback } from 'react';
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { services } from '@/lib/content';
+import type { Service } from '@/types/photography';
 import SplitReveal from '@/components/ui/SplitReveal';
 
 gsap.registerPlugin(ScrollTrigger);
+
+interface ServicesProps {
+  services: Service[];
+}
 
 /**
  * Services — single section with layered animations.
@@ -13,7 +17,7 @@ gsap.registerPlugin(ScrollTrigger);
  * (desktop) or fade+settle (mobile, GPU-composited) → content slides up →
  * 3D tilt on hover → parallax on scroll (desktop only).
  */
-export default function Services() {
+export default function Services({ services = [] }: ServicesProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<HTMLSpanElement>(null);

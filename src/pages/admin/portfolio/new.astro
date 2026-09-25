@@ -1,0 +1,19 @@
+---
+import AdminShell from '@/components/admin/AdminShell.astro';
+import PortfolioForm from '@/components/admin/PortfolioForm.astro';
+import { getPortfolioImages } from '@/lib/services/portfolio.service';
+
+const photos = await getPortfolioImages();
+const error = Astro.url.searchParams.get('error');
+---
+
+<AdminShell title="Add Photo" active="portfolio" error={error}>
+  <header class="mb-8">
+    <h1 class="font-serif text-3xl font-light">Add Photo</h1>
+    <p class="mt-2 text-sm text-charcoal-light">
+      {photos.length} / 30 photos in use (maximum 30, minimum 10).
+    </p>
+  </header>
+
+  <PortfolioForm />
+</AdminShell>

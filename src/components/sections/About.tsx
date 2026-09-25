@@ -1,8 +1,14 @@
-import { studioInfo } from '@/lib/content';
+import type { StudioInfo } from '@/types/photography';
+import { studioInfo as fallbackStudioInfo } from '@/lib/content';
 import SplitReveal from '@/components/ui/SplitReveal';
 import RevealImage from '@/components/ui/RevealImage';
 
-export default function About() {
+interface AboutProps {
+  studioInfo?: StudioInfo | null;
+}
+
+export default function About({ studioInfo }: AboutProps) {
+  const info = studioInfo ?? fallbackStudioInfo;
   return (
     <section id="about" className="overflow-hidden">
       <div className="mx-auto max-w-[1440px] px-6 sm:px-8 md:px-10 lg:px-16 py-20 md:py-28 lg:py-36">
@@ -42,7 +48,7 @@ export default function About() {
               Photographing <em>what matters</em> most.
             </SplitReveal>
             <div className="mt-10 max-w-[580px] space-y-6 font-sans text-[14px] font-light leading-7 text-charcoal-light">
-              <p>{studioInfo.description}</p>
+              <p>{info.description}</p>
               <p>
                 From the delicate details of a newborn to the joyful milestones
                 of childhood and the love shared between family members, we

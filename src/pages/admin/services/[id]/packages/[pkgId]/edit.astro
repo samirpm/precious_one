@@ -1,0 +1,41 @@
+---
+import AdminShell from '@/components/admin/AdminShell.astro';
+import PackageForm from '@/components/admin/PackageForm.astro';
+import { getService } from '@/lib/services/service.service';
+import { getPackage } from '@/lib/services/package.service';
+import { HttpError } from '@/lib/errors';
+
+const serviceId = Astro.params.id as string;
+const pkgId = Astro.params.pkgId as string;
+const error = Astro.url.searchParams.get('error');
+
+let service;
+try {
+  service = await getService(serviceId);
+} catch (e) {
+  if (e instanceof HttpError && e.status === 404) return Astro.redirect('/admin/services');
+  throw e;
+}
+
+let pkg;
+try {
+  pkg = await getPackage(pkgId);
+} catch (e) {
+  if (e instanceof HttpError && e.status === 404) {
+    return Astro.redirect(`/admin/services/${serviceId}/packages`);
+  }
+  throw e;
+}
+---
+
+<AdminShell title={`Edit Package · ${service.title}`} active="services" error={error}>
+  <header class="mb-8">
+    <p class="font-sans text-[9px] uppercase tracking-[0.3em] text-taupe">
+      <a href="/admin/services" class="hover:text-charcoal">Services</a> /
+      <a href={`/admin/services/${serviceId}/packages`} class="hover:text-charcoal">{service.slug}</a>
+    </p>
+    <h1 class="mt-2 font-serif text-3xl font-light">Edit Package — {pkg.name}</h1>
+  </header>
+
+  <PackageForm serviceId={serviceId} pkg={pkg} />
+</AdminShell>

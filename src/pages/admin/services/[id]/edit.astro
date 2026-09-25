@@ -1,0 +1,27 @@
+---
+import AdminShell from '@/components/admin/AdminShell.astro';
+import ServiceForm from '@/components/admin/ServiceForm.astro';
+import { getService } from '@/lib/services/service.service';
+import { HttpError } from '@/lib/errors';
+
+let service = null;
+let notFound = false;
+try {
+  service = await getService(Astro.params.id as string);
+} catch (error) {
+  if (error instanceof HttpError && error.status === 404) notFound = true;
+  else throw error;
+}
+
+if (notFound) return Astro.redirect('/admin/services');
+const error = Astro.url.searchParams.get('error');
+---
+
+<AdminShell title="Edit Service" active="services" error={error}>
+  <header class="mb-8">
+    <h1 class="font-serif text-3xl font-light">Edit Service</h1>
+    <p class="mt-2 text-sm text-charcoal-light">{service!.title}</p>
+  </header>
+
+  <ServiceForm service={service!} />
+</AdminShell>

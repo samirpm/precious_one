@@ -16,11 +16,14 @@ if (typeof window !== 'undefined') {
     } | undefined;
     if (lenis) {
       lenis.on('scroll', ScrollTrigger.update);
+
+      // Perfect sync for ProMotion (120Hz) displays
+      // We use gsap.ticker.add to drive Lenis raf.
+      // gsap.ticker.lagSmoothing(0) ensures no artificial frame drops.
+      gsap.ticker.lagSmoothing(0);
       gsap.ticker.add((time: number) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (lenis as any).raf(time * 1000);
       });
-      gsap.ticker.lagSmoothing(0);
     } else {
       requestAnimationFrame(syncLenis);
     }

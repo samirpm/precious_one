@@ -14,9 +14,10 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
     if (prefersReducedMotion) return;
 
     const lenis = new Lenis({
-      lerp: 0.1,
-      duration: 1.2,
+      lerp: 0.15,
+      duration: 1.0,
       smoothWheel: true,
+      wheelMultiplier: 1.1,
     });
 
     lenisRef.current = lenis;

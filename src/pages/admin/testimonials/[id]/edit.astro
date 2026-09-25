@@ -1,0 +1,27 @@
+---
+import AdminShell from '@/components/admin/AdminShell.astro';
+import TestimonialForm from '@/components/admin/TestimonialForm.astro';
+import { getTestimonial } from '@/lib/services/testimonial.service';
+import { HttpError } from '@/lib/errors';
+
+let testimonial = null;
+let notFound = false;
+try {
+  testimonial = await getTestimonial(Astro.params.id as string);
+} catch (error) {
+  if (error instanceof HttpError && error.status === 404) notFound = true;
+  else throw error;
+}
+
+if (notFound) return Astro.redirect('/admin/testimonials');
+const error = Astro.url.searchParams.get('error');
+---
+
+<AdminShell title="Edit Testimonial" active="testimonials" error={error}>
+  <header class="mb-8">
+    <h1 class="font-serif text-3xl font-light">Edit Testimonial</h1>
+    <p class="mt-2 text-sm text-charcoal-light">{testimonial!.name}</p>
+  </header>
+
+  <TestimonialForm testimonial={testimonial!} />
+</AdminShell>

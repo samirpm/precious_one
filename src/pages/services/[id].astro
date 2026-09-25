@@ -6,16 +6,22 @@ import Footer from '@/components/navigation/Footer.astro';
 import FilmGrain from '@/components/ui/FilmGrain.astro';
 import CustomCursor from '@/components/ui/CustomCursor';
 import ScrollProgress from '@/components/ui/ScrollProgress';
-import { services } from '@/lib/content';
+import { getServiceBySlug, getServices, getStudioInfo } from '@/lib/data';
 
-export function getStaticPaths() {
-  return services.map((service) => ({
-    params: { id: service.id },
-    props: { service },
-  }));
+// SSR: look up the service by slug from PostgreSQL (edited via /admin)
+const service = Astro.params.id
+  ? await getServiceBySlug(Astro.params.id)
+  : null;
+
+if (!service) {
+  return Astro.redirect('/404');
 }
 
-const { service } = Astro.props;
+const [services, studioInfo] = await Promise.all([
+  getServices(),
+  getStudioInfo().catch(() => null),
+]);
+
 const { title, description } = service;
 ---
 
@@ -27,7 +33,7 @@ const { title, description } = service;
   <Header client:load isVisible={true} />
 
   <main class="min-h-screen overflow-x-clip bg-ivory">
-    <ServiceDetail client:load service={service} />
+    <ServiceDetail client:load service={service} services={services} studioInfo={studioInfo} />
     <Footer />
   </main>
 </Layout>

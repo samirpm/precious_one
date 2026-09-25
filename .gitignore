@@ -28,6 +28,7 @@
 
 # debug
 npm-debug.log*
+.pgdata
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
@@ -56,6 +57,7 @@ camera.obj
 # media and large assets
 *.mp4
 *.webp
+*.md
 public/video-frames/
 
 # AI agent configs

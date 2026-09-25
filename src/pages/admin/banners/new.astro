@@ -1,0 +1,17 @@
+---
+import AdminShell from '@/components/admin/AdminShell.astro';
+import BannerForm from '@/components/admin/BannerForm.astro';
+import { getBanners } from '@/lib/services/banner.service';
+
+const banners = await getBanners();
+const error = Astro.url.searchParams.get('error');
+---
+
+<AdminShell title="Add Banner" active="banners" error={error}>
+  <header class="mb-8">
+    <h1 class="font-serif text-3xl font-light">Add Banner</h1>
+    <p class="mt-2 text-sm text-charcoal-light">{banners.length} / 5 banners in use.</p>
+  </header>
+
+  <BannerForm />
+</AdminShell>

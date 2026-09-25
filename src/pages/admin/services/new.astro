@@ -1,0 +1,15 @@
+---
+import AdminShell from '@/components/admin/AdminShell.astro';
+import ServiceForm from '@/components/admin/ServiceForm.astro';
+
+const error = Astro.url.searchParams.get('error');
+---
+
+<AdminShell title="Add Service" active="services" error={error}>
+  <header class="mb-8">
+    <h1 class="font-serif text-3xl font-light">Add Service</h1>
+    <p class="mt-2 text-sm text-charcoal-light">Services appear in homepage and navigation order.</p>
+  </header>
+
+  <ServiceForm />
+</AdminShell>

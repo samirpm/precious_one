@@ -1,10 +1,8 @@
 import ParallaxUnfurlingGallery from '@/components/ui/3d-parallax-unfurling-gallery';
-import { portfolio } from '@/lib/content';
 
-/** Distinct portfolio photographs (photo-1 … photo-15), deduplicated. */
-const galleryImages = Array.from(
-  new Set(portfolio.map((p) => p.imageUrl)),
-).slice(0, 15);
+interface Portfolio3DProps {
+  images: string[];
+}
 
 /**
  * Portfolio3D — the home-page portfolio section.
@@ -12,7 +10,10 @@ const galleryImages = Array.from(
  * Editorial text sits on the left (30%); the 3D parallax unfurling gallery
  * fills the right (70%) and plays as the visitor scrolls down.
  */
-export default function Portfolio3D() {
+export default function Portfolio3D({ images = [] }: Portfolio3DProps) {
+  /** Distinct portfolio photographs, deduplicated, capped at 15. */
+  const galleryImages = Array.from(new Set(images)).slice(0, 15);
+
   return (
     <ParallaxUnfurlingGallery images={galleryImages} overlay="Our Work">
       <div className="mb-8 flex items-center gap-4">

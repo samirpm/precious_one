@@ -25,6 +25,7 @@ gsap.registerPlugin(ScrollTrigger);
  * their own block.
  */
 type Testimonial = {
+  id: string;
   quote: string;
   name: string;
   role: string;
@@ -32,7 +33,12 @@ type Testimonial = {
   alt: string;
 };
 
-const testimonials: Testimonial[] = [
+interface TestimonialsProps {
+  testimonials: Testimonial[];
+}
+
+/** Fallback content — used only when the database returns no rows. */
+const fallbackTestimonials: Testimonial[] = [
   {
     quote:
       'They captured our baby’s very first days with such patience and tenderness. Every frame feels like a piece of art we will treasure forever.',
@@ -86,8 +92,6 @@ const testimonials: Testimonial[] = [
 
 const locations = ['Al Reem Island', 'Saadiyat Island', 'Yas Island', 'Baniyas', 'Al Raha', 'Corniche'];
 
-const COUNT = testimonials.length;
-const STEP = 360 / COUNT; // degrees between neighbouring cards
 const DRAG_SCALE = 0.35; // degrees the ring turns per pixel dragged
 const FLING_MS = 200; // inertia window applied to a fast swipe
 const AUTOPLAY_MS = 5600;
@@ -123,7 +127,11 @@ const geometry = (mobile: boolean) =>
 
 type Layout = 'auto' | 'mobile' | 'desktop';
 
-export default function Testimonials() {
+export default function Testimonials({ testimonials: propsTestimonials = [] }: TestimonialsProps) {
+  // Prefer DB content; fall back to the hardcoded ring so the section never breaks.
+  const testimonials = propsTestimonials.length > 0 ? propsTestimonials : fallbackTestimonials;
+  const COUNT = Math.max(testimonials.length, 1); // guard against empty-ring division by zero
+  const STEP = 360 / COUNT; // degrees between neighbouring cards
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
 

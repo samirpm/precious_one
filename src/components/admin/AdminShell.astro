@@ -1,0 +1,107 @@
+---
+interface Props {
+  title: string;
+  active: 'dashboard' | 'banners' | 'portfolio' | 'services' | 'packages' | 'testimonials' | 'studio' | 'bookings';
+  error?: string | null;
+}
+
+const { title, active, error } = Astro.props;
+
+const nav = [
+  { key: 'dashboard', href: '/admin', label: 'Dashboard' },
+  { key: 'bookings', href: '/admin/bookings', label: 'Bookings' },
+  { key: 'banners', href: '/admin/banners', label: 'Banners' },
+  { key: 'portfolio', href: '/admin/portfolio', label: 'Portfolio' },
+  { key: 'services', href: '/admin/services', label: 'Services' },
+  { key: 'testimonials', href: '/admin/testimonials', label: 'Testimonials' },
+  { key: 'studio', href: '/admin/studio', label: 'Studio Info' },
+] as const;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="h-full antialiased">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>{title} | Admin | Precious One Photography</title>
+  </head>
+  <body class="min-h-full bg-ivory font-sans text-charcoal">
+    <div class="flex min-h-screen flex-col md:flex-row">
+      <!-- Mobile top nav -->
+      <div class="flex items-center justify-between border-b border-charcoal/10 bg-white px-4 py-3 md:hidden">
+        <p class="font-serif text-base">Admin</p>
+        <form method="POST" action="/admin/logout">
+          <button type="submit" class="text-xs text-red-700">Sign out</button>
+        </form>
+      </div>
+      <nav class="flex gap-1 overflow-x-auto border-b border-charcoal/10 bg-white px-3 py-2 md:hidden">
+        {nav.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'whitespace-nowrap rounded px-3 py-1.5 text-xs',
+              active === item.key ? 'bg-charcoal/5 font-medium' : 'hover:bg-charcoal/5',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Desktop sidebar -->
+      <aside class="hidden w-64 shrink-0 border-r border-charcoal/10 bg-white md:block">
+        <div class="border-b border-charcoal/10 px-6 py-6 flex flex-col items-center text-center">
+          <img src="/images/logo.png" alt="Precious One Logo" class="mb-4 h-16 w-auto object-contain" />
+          <p class="font-sans text-[9px] uppercase tracking-[0.3em] text-taupe">Precious One</p>
+          <p class="mt-1 font-serif text-lg font-light">Admin Panel</p>
+        </div>
+        <nav class="space-y-1 px-3 py-6 text-sm">
+          {nav.map((item) => (
+            <a
+              href={item.href}
+              class:list={[
+                'block rounded px-3 py-2',
+                active === item.key ? 'bg-charcoal/5 font-medium' : 'hover:bg-charcoal/5',
+              ]}
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+        <div class="px-3">
+          <form method="POST" action="/admin/logout">
+            <button type="submit" class="w-full rounded px-3 py-2 text-left text-sm text-red-700 hover:bg-red-50">
+              Sign out
+            </button>
+          </form>
+        </div>
+      </aside>
+
+      <main class="flex-1 px-6 py-10 md:px-12">
+        {error && (
+          <div class="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+        <slot />
+      </main>
+    </div>
+
+    <script>
+      // Confirm-before-delete for every destructive form on admin pages
+      document.querySelectorAll('form[data-confirm]').forEach((form) => {
+        form.addEventListener('submit', (e) => {
+          if (!window.confirm('Delete this item? This cannot be undone.')) {
+            e.preventDefault();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  @import '../../styles/globals.css';
+</style>
